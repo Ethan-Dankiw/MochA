@@ -4,6 +4,7 @@ import React from "react";
 import {useChat} from "@ai-sdk/react";
 import ChatMessages from "@/components/chatbot/ChatMessages";
 import ChatMessageInput from "@/components/chatbot/ChatMessageInput";
+import {Sidebar, SidebarContent, SidebarFooter} from "@/components/ui/sidebar";
 
 type Props = {
     children?: React.ReactNode;
@@ -19,13 +20,13 @@ export default function ChatSidebar(props: Readonly<Props>): React.ReactNode {
     }
 
     return (
-        <div className={"flex flex-col h-full overflow-hidden border-l border-border"}>
-            <div className={"flex-1 overflow-y-auto p-4"}>
+        <Sidebar side={"right"} collapsible={"none"} className={"border-l bg-background h-full"}>
+            <SidebarContent className={"flex-1 min-h-0 overflow-y-auto p-4 custom-scrollbar"}>
                 <ChatMessages messages={messages} />
-            </div>
-            <div className={"p-4 border-t border-border bg-background"}>
+            </SidebarContent>
+            <SidebarFooter className={"shrink-0 p-4 border-t border-border"}>
                 <ChatMessageInput status={status} send={handleMessageSend} />
-            </div>
-        </div>
-    );
+            </SidebarFooter>
+        </Sidebar>
+    )
 }

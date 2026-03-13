@@ -5,6 +5,7 @@ import {cn} from "@/lib/utils";
 import React from "react";
 import {ThemeProvider} from "next-themes";
 import PageHeader from "@/components/PageHeader";
+import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 
 const jetbrainsMono = JetBrains_Mono({subsets: ['latin'], variable: '--font-mono'});
 
@@ -31,13 +32,15 @@ export default function RootLayout(props: Readonly<Props>) {
     return (
         <html lang="en" className={cn("font-mono", jetbrainsMono.variable)} suppressHydrationWarning={true}>
         <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col overflow-hidden`}
         >
         <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true} disableTransitionOnChange={true}>
-            <PageHeader />
-            <main className={"flex-1 flex flex-col min-h-0"}>
-                {props.children}
-            </main>
+            <SidebarProvider className={"flex-col flex-1 min-h-0 overflow-hidden"}>
+                <PageHeader />
+                <main className={"flex-1 flex flex-col min-h-0 overflow-hidden"}>
+                    {props.children}
+                </main>
+            </SidebarProvider>
         </ThemeProvider>
         </body>
         </html>

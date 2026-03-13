@@ -16,7 +16,23 @@ export default function ChatMessageInput(props: Readonly<Props>): React.ReactNod
     const [message, setMessage] = React.useState<string | null>(null);
 
     return (
-        <form action={() => props.send(message ?? "")}>
+        <form action={async () => {
+            // If the message has no contents
+            if (message == null || message === "") {
+                return;
+            }
+
+            // If the message has already sent
+            if (props.status === "submitted") {
+                return;
+            }
+
+            // Send the message
+            await props.send(message)
+
+            // Reset the message
+            setMessage(null);
+        }}>
             <FieldGroup className={"flex flex-row"}>
                 <Field className={"w-full"}>
                     <Input type={"text"} disabled={props.status !== 'ready'} placeholder={"Type your message..."}
@@ -25,7 +41,7 @@ export default function ChatMessageInput(props: Readonly<Props>): React.ReactNod
                 </Field>
                 <Field className={"w-min"}>
                     <Button type={"submit"} disabled={props.status != "ready"}
-                            className={"rounded-lg bg-[#f55036] px-4 py-2 text-white hover:bg-[#d94530] disabled:opacity-50"}>
+                            className={"rounded-md bg-blue-300 hover:bg-blue-400 active:bg-blue-500 px-4 py-2  disabled:opacity-50"}>
                         <span>{props.status === 'streaming' ? '...' : 'Send'}</span>
                     </Button>
                 </Field>
