@@ -20,7 +20,7 @@ const getBasePrompt = async (): Promise<string | null> => {
     // Otherwise, fetch it from disk
     try {
         // Get the file path to the prompt file
-        const prompt_file_path = path.join(process.cwd(), 'src', 'data', 'prompt.txt');
+        const prompt_file_path = path.join(process.cwd(), 'src', 'lib', 'data', 'prompt.txt');
 
         // Attempt to read the contents of the prompt text file
         cached_base_prompt = await fs.readFile(prompt_file_path, 'utf8');

@@ -2,7 +2,7 @@
 
 import React from "react";
 import {Editor} from "@monaco-editor/react";
-import {useCode} from "@/contexts/code/CodeContext";
+import {useCode} from "@/components/contexts/code/CodeContext";
 
 type Props = {
     initialCode?: string;

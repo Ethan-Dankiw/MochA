@@ -1,9 +1,9 @@
 "use client"
 
 import React from "react"
-import {ILLMContext, LLMContext} from "@/contexts/llm/LLMContext";
+import {ILLMContext, LLMContext} from "@/components/contexts/llm/LLMContext";
 import {useChat} from "@ai-sdk/react";
-import {useCode} from "@/contexts/code/CodeContext";
+import {useCode} from "@/components/contexts/code/CodeContext";
 
 // The type used to provide interface values to the context provider component
 type Props = {

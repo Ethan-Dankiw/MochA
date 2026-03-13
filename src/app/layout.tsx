@@ -6,7 +6,7 @@ import React from "react";
 import {ThemeProvider} from "next-themes";
 import PageHeader from "@/components/PageHeader";
 import {SidebarProvider} from "@/components/ui/sidebar";
-import AppProvider from "@/contexts/app/AppProvider";
+import AppProvider from "@/components/contexts/app/AppProvider";
 import {Toaster} from "@/components/ui/sonner";
 
 const jetbrainsMono = JetBrains_Mono({subsets: ['latin'], variable: '--font-mono'});

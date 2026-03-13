@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import {CodeContext, ICodeContext} from "@/contexts/code/CodeContext";
+import {CodeContext, ICodeContext} from "@/components/contexts/code/CodeContext";
 
 // The type used to provide interface values to the context provider component
 type Props = {
