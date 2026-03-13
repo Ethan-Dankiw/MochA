@@ -14,7 +14,7 @@ export default function PageHeader(props: Readonly<Props>): React.ReactNode {
                     <li>Home</li>
                     <li>About</li>
                 </ul>
-                <ul className={"flex flex-row gap-4"}>
+                <ul className={"flex flex-row gap-2"}>
                     <li>Login</li>
                     <p>or</p>
                     <li>Sign-Up</li>
