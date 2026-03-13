@@ -1,4 +1,5 @@
 'use client';
+
 import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
 import { useWhisper } from '@/hooks/useWhisper';
@@ -11,21 +12,33 @@ export default function Chat() {
   });
 
   const playTTS = (text: string) => {
+    // Cancel any current speech (essential for responsiveness)
     window.speechSynthesis.cancel();
+
+    // Use a URL with query params so the <audio> element can 'GET' it
     const url = `/api/tts?text=${encodeURIComponent(text)}`;
+
     const audio = new Audio(url);
+
+    // Play immediately as data trickles in
     audio.play().catch(err => {
       console.error("Playback failed (likely needs user gesture):", err);
     });
+
+    // Speed it up slightly
     audio.playbackRate = 1.1;
   };
 
   const { messages, sendMessage, status } = useChat({
+    // Destructure 'message' from the context object
     onFinish: ({ message }) => {
+      // Extract the text from the parts array
       const fullText = message.parts
         .filter((part) => part.type === 'text')
         .map((part) => part.text)
         .join(' ');
+
+      // Only play if there is actual text
       if (fullText.trim()) {
         playTTS(fullText);
       }
@@ -80,37 +93,37 @@ export default function Chat() {
           <p className="text-xs text-gray-400 mb-2 text-center">Transcribing with Whisper…</p>
         )}
 
-        <form onSubmit={handleFormSubmit} className="flex gap-2">
-          <button
-            type="button"
-            onClick={toggleRecording}
-            disabled={recordingState === 'transcribing' || status !== 'ready'}
-            title={recordingState === 'recording' ? 'Stop recording' : 'Start voice input'}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 ${micColour} text-black`}
-          >
-            {micLabel}
-          </button>
+          <form onSubmit={handleFormSubmit} className="flex gap-2">
+              <button
+                  type="button"
+                  onClick={toggleRecording}
+                  disabled={recordingState === 'transcribing' || status !== 'ready'}
+                  title={recordingState === 'recording' ? 'Stop recording' : 'Start voice input'}
+                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 ${micColour} text-black`}
+              >
+                  {micLabel}
+              </button>
 
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={
-              recordingState === 'recording' ? 'Recording… click Stop when done' :
-              recordingState === 'transcribing' ? 'Transcribing…' :
-              'Type your message...'
-            }
-            disabled={isChatDisabled}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-black outline-none focus:ring-2 focus:ring-[#f55036] disabled:opacity-60"
-          />
+              <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={
+                      recordingState === 'recording' ? 'Recording… click Stop when done' :
+                          recordingState === 'transcribing' ? 'Transcribing…' :
+                              'Type your message...'
+                  }
+                  disabled={isChatDisabled}
+                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-black outline-none focus:ring-2 focus:ring-[#f55036] disabled:opacity-60"
+              />
 
-          <button
-            type="submit"
-            disabled={isChatDisabled || !input.trim()}
-            className="rounded-lg bg-[#f55036] px-4 py-2 text-white hover:bg-[#d94530] disabled:opacity-50"
-          >
-            {status === 'streaming' ? '...' : 'Send'}
-          </button>
-        </form>
+              <button
+                  type="submit"
+                  disabled={isChatDisabled || !input.trim()}
+                  className="rounded-lg bg-[#f55036] px-4 py-2 text-white hover:bg-[#d94530] disabled:opacity-50"
+              >
+                  {status === 'streaming' ? '...' : 'Send'}
+              </button>
+          </form>
 
       </div>
     </div>
