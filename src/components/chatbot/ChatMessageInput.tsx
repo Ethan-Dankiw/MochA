@@ -17,8 +17,11 @@ export default function ChatMessageInput(props: Readonly<Props>): React.ReactNod
 
     return (
         <form action={async () => {
+            // Trim the message to remove whitespace
+            const trimmed = message?.trim();
+
             // If the message has no contents
-            if (message == null || message === "") {
+            if (trimmed == null || trimmed === "") {
                 return;
             }
 
@@ -28,7 +31,7 @@ export default function ChatMessageInput(props: Readonly<Props>): React.ReactNod
             }
 
             // Send the message
-            await props.send(message)
+            await props.send(trimmed)
 
             // Reset the message
             setMessage(null);
