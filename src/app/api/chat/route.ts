@@ -46,8 +46,6 @@ export async function POST(req: Request) {
     Coding
     The main things you’re looking for when grading the coding portion of the Mock Interview are the interviewee’s communication, and how clear is their code to read. If the interview codes their solution primarily in silence, or you (the interviewer) gets lost at all following their code, the interview is a fail. These are the things you need to look out for when grading:
 
-
-
     The interviewee writes main steps of their algorithm as comments in the function before writing their
     real code. They lose marks if they don’t do this.
     The interviewee explains each line of code they write verbally before writing it.
@@ -71,8 +69,6 @@ export async function POST(req: Request) {
         return max;
     }
 
-
-
     Let’s say at the beginning of the interview it was already established that if this algorithm were run with an input of {3,1,4,2}, it would return 4. The interviewee would run the test by initialising the variables by writing down their initial values in the document, and then writing out all iterations of the for loop, and updating the variable values along the way. The block of text below is literally what the interviewee would write in an interview, talking it through as they went.
 
     max = -infinity
@@ -84,7 +80,6 @@ export async function POST(req: Request) {
     max = 4
     i = 3
     max = 4  
-
 
     If the interviewee does not get up to testing, they get a 0. If they test their code verbally without writing much down, they get a score of 1-4 (fail). If they test their code, and write it down, but get confused and fumble along the way they pass with a 5+. If they test their code quickly, clearly, and write it down, they will get a higher score of 8-10.
     Giving Hints

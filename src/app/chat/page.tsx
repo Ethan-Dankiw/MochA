@@ -1,25 +1,25 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
-import { useState } from 'react'; // 1. Add this
+import { useState } from 'react'; 
 
 export default function Chat() {
 
   const playTTS = (text: string) => {
-    // 1. Cancel any current speech (essential for responsiveness)
+    // Cancel any current speech (essential for responsiveness)
     window.speechSynthesis.cancel(); 
 
-    // 2. Use a URL with query params so the <audio> element can 'GET' it
+    // Use a URL with query params so the <audio> element can 'GET' it
     const url = `/api/tts?text=${encodeURIComponent(text)}`;
     
     const audio = new Audio(url);
     
-    // 3. Play immediately as data trickles in
+    // Play immediately as data trickles in
     audio.play().catch(err => {
       console.error("Playback failed (likely needs user gesture):", err);
     });
 
-    // Optional: Speed it up slightly to feel more 'AI'
+    // Speed it up slightly
     audio.playbackRate = 1.1;
   };
   
@@ -66,7 +66,7 @@ export default function Chat() {
                     if (part.type === 'text') {
                       return <span key={i}>{part.text}</span>;
                     }
-                    // You can handle other types like 'tool-invocation' here later
+       
                     return null;
                   })}
                 </div>
