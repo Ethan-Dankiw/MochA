@@ -127,3 +127,33 @@
     @apply font-mono;
   }
 }
+
+/* src/app/globals.css */
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    display: block !important; /* Force display */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    /* Use the oklch variable directly or a standard tailwind color */
+    background-color: var(--muted-foreground);
+    border-radius: 9999px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--foreground);
+  }
+
+  /* Firefox support */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    /* Avoid hsl() here since your theme uses oklch */
+    scrollbar-color: var(--muted-foreground) transparent;
+  }
+}
