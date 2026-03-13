@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import {ITextToSpeechContext, TextToSpeechContext} from "@/contexts/tts/TextToSpeechContext";
+import {ITextToSpeechContext, TextToSpeechContext} from "@/components/contexts/tts/TextToSpeechContext";
 import generateAudio from "@/actions/elevenlabs";
 import {toast} from "sonner";
 

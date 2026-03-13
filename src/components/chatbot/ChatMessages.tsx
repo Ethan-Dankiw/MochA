@@ -1,5 +1,5 @@
 import React from "react";
-import {useLLM} from "@/contexts/llm/LLMContext";
+import {useLLM} from "@/components/contexts/llm/LLMContext";
 
 type Props = {}
 
