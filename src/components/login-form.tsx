@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { loginUser } from "@/lib/handlelogin"
+import { signIn } from "next-auth/react"
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const handleSubmit = async (formData: FormData) => {
@@ -56,7 +57,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
-                <Button variant="outline" type="button">
+                <Button variant="outline" type="button" onClick={() => signIn("google")}>
                   Login with Google
                 </Button>
                 <FieldDescription className="text-center">
