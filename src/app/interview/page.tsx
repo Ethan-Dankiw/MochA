@@ -1,7 +1,7 @@
 import React from "react";
 import CodeEditor from "@/components/CodeEditor";
-import ChatSidebar from "@/components/sidebar/ChatSidebar";
 import {SidebarInset} from "@/components/ui/sidebar";
+import ChatSidebar from "@/components/chatbot/ChatSidebar";
 
 type Props = {
     children?: React.ReactNode;
