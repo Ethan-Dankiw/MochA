@@ -1,14 +1,35 @@
 'use client';
 import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
-import { useWhisper } from '../hooks/useWhisper';
+import { useWhisper } from '@/hooks/useWhisper';
 
 export default function Chat() {
-  const { messages, sendMessage, status } = useChat();
   const [input, setInput] = useState('');
 
   const { recordingState, error, toggleRecording } = useWhisper((text) => {
     setInput(prev => prev ? `${prev} ${text}` : text);
+  });
+
+  const playTTS = (text: string) => {
+    window.speechSynthesis.cancel();
+    const url = `/api/tts?text=${encodeURIComponent(text)}`;
+    const audio = new Audio(url);
+    audio.play().catch(err => {
+      console.error("Playback failed (likely needs user gesture):", err);
+    });
+    audio.playbackRate = 1.1;
+  };
+
+  const { messages, sendMessage, status } = useChat({
+    onFinish: ({ message }) => {
+      const fullText = message.parts
+        .filter((part) => part.type === 'text')
+        .map((part) => part.text)
+        .join(' ');
+      if (fullText.trim()) {
+        playTTS(fullText);
+      }
+    },
   });
 
   const handleFormSubmit = (e: React.FormEvent) => {

@@ -16,7 +16,7 @@ export function useWhisper(onTranscript: (text: string) => void) {
       const formData = new FormData();
       formData.append('audio', audioBlob, 'recording.webm');
 
-      const res = await fetch('/transcribe', { method: 'POST', body: formData });
+      const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
       if (!res.ok) throw new Error('Transcription request failed');
 
       const { text, error } = await res.json();
