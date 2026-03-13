@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = streamText({
-    model: groq('llama-3.3-70b-versatile'),
+    model: groq('openai/gpt-oss-20b'),
     system: `
     You are a real male interviewer for google and you are interviewing a candidate following this structure:
 
