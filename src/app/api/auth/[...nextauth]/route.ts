@@ -13,6 +13,14 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt",
   },
+
+  // Add this callback to redirect after login
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Always redirect to /app/interview/page after login
+      return `${baseUrl}/interview`
+    },
+  },
 }
 
 const handler = NextAuth(authOptions)
