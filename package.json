@@ -9,14 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-<<<<<<< HEAD
-=======
-    "@ai-sdk/groq": "^3.0.29",
-    "@ai-sdk/react": "^3.0.118",
-    "ai": "^6.0.116",
-    "groq-sdk": "^1.1.1",
-    "react-markdown": "^10.1.0",
->>>>>>> 3bb0363 (fix(master-merge-conflict): fix merge config with package.json being formatted wrong)
     "@base-ui/react": "^1.3.0",
     "@monaco-editor/react": "^4.7.0",
     "@phosphor-icons/react": "^2.1.10",
