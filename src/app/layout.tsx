@@ -3,6 +3,8 @@ import {Geist, Geist_Mono, JetBrains_Mono} from "next/font/google";
 import "./globals.css";
 import {cn} from "@/lib/utils";
 import React from "react";
+import {ThemeProvider} from "next-themes";
+import PageHeader from "@/components/PageHeader";
 
 const jetbrainsMono = JetBrains_Mono({subsets: ['latin'], variable: '--font-mono'});
 
@@ -27,11 +29,16 @@ type Props = {
 
 export default function RootLayout(props: Readonly<Props>) {
     return (
-        <html lang="en" className={cn("font-mono", jetbrainsMono.variable)}>
+        <html lang="en" className={cn("font-mono", jetbrainsMono.variable)} suppressHydrationWarning={true}>
         <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col`}
         >
-        {props.children}
+        <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true} disableTransitionOnChange={true}>
+            <PageHeader />
+            <main className={"flex-1 flex flex-col min-h-0"}>
+                {props.children}
+            </main>
+        </ThemeProvider>
         </body>
         </html>
     );
