@@ -4,8 +4,40 @@ import { useChat } from '@ai-sdk/react';
 import { useState } from 'react'; // 1. Add this
 
 export default function Chat() {
-  // 2. Remove 'input', 'handleInputChange', and 'handleSubmit'
-  const { messages, sendMessage, status } = useChat();
+
+  const playTTS = (text: string) => {
+    // 1. Cancel any current speech (essential for responsiveness)
+    window.speechSynthesis.cancel(); 
+
+    // 2. Use a URL with query params so the <audio> element can 'GET' it
+    const url = `/api/tts?text=${encodeURIComponent(text)}`;
+    
+    const audio = new Audio(url);
+    
+    // 3. Play immediately as data trickles in
+    audio.play().catch(err => {
+      console.error("Playback failed (likely needs user gesture):", err);
+    });
+
+    // Optional: Speed it up slightly to feel more 'AI'
+    audio.playbackRate = 1.1;
+  };
+  
+  const { messages, sendMessage, status } = useChat({
+    // Destructure 'message' from the context object
+    onFinish: ({ message }) => {
+      // Extract the text from the parts array
+      const fullText = message.parts
+        .filter((part) => part.type === 'text')
+        .map((part) => part.text)
+        .join(' ');
+
+      // Only play if there is actual text
+      if (fullText.trim()) {
+        playTTS(fullText);
+      }
+    },
+  });
   
   // 3. Manually manage the input state
   const [input, setInput] = useState('');
