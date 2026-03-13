@@ -3,6 +3,7 @@
 import React from "react"
 import {ILLMContext, LLMContext} from "@/contexts/llm/LLMContext";
 import {useChat} from "@ai-sdk/react";
+import {useCode} from "@/contexts/code/CodeContext";
 
 // The type used to provide interface values to the context provider component
 type Props = {
@@ -12,6 +13,9 @@ type Props = {
 
 // React context provider component used to expose the context to children
 export function LLMProvider(props: Readonly<Props>): React.ReactNode {
+    // Get the current state of the code editor's contents
+    const {code} = useCode()
+
     const {messages, sendMessage, status} = useChat({
         onFinish: ({message: response}) => {
             // Convert the response to text by combining all the parts of the response message
@@ -32,8 +36,14 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
     });
 
     const send = React.useCallback(async (message: string) => {
-        await sendMessage({ text: message });
-    }, [sendMessage])
+        // Send the message with the code's attachment
+        await sendMessage(
+            { text: message },
+            { body: {
+                currentCode: code
+            }}
+        );
+    }, [sendMessage, code])
 
     // Memoize the context value to its no re-computed on renders unnecessarily
     const value = React.useMemo<ILLMContext>(() => {

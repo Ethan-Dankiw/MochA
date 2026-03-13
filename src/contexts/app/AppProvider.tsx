@@ -7,6 +7,7 @@ import {useTextToSpeech} from "@/contexts/tts/TextToSpeechContext";
 import {LLMProvider} from "@/contexts/llm/LLMProvider";
 import {useLLM} from "@/contexts/llm/LLMContext";
 import VoiceToTextProvider from "@/contexts/vtt/VoiceToTextProvider";
+import {CodeProvider} from "@/contexts/code/CodeProvider";
 
 // The type used to provide interface values to the context provider component
 type Props = {
@@ -45,13 +46,15 @@ export default function AppProvider(props: Readonly<Props>): React.ReactNode {
     // Return the provider component
     return (
         <AppContext.Provider value={value}>
-            <TextToSpeechProvider>
-                <LLMBridge>
-                    <VoiceToTextBridge>
-                        {props.children}
-                    </VoiceToTextBridge>
-                </LLMBridge>
-            </TextToSpeechProvider>
+            <CodeProvider>
+                <TextToSpeechProvider>
+                    <LLMBridge>
+                        <VoiceToTextBridge>
+                            {props.children}
+                        </VoiceToTextBridge>
+                    </LLMBridge>
+                </TextToSpeechProvider>
+            </CodeProvider>
         </AppContext.Provider>
     )
 }

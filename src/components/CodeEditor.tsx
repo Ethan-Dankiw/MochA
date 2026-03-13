@@ -2,14 +2,19 @@
 
 import React from "react";
 import {Editor} from "@monaco-editor/react";
+import {useCode} from "@/contexts/code/CodeContext";
 
 type Props = {
     initialCode?: string;
 }
 
 export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
-    // Store the written code
-    const [code, setCode] = React.useState<string | null>(props.initialCode ?? null);
+    const {setCode} = useCode();
+
+    // On load set the default code
+    React.useEffect(() => {
+        setCode(props.initialCode ?? "");
+    }, [props.initialCode])
 
     return (
         <Editor
