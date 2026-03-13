@@ -1,0 +1,57 @@
+"use client"
+
+import React from "react"
+import {AppContext, IAppContext} from "@/contexts/app/AppContext";
+import TextToSpeechProvider from "@/contexts/tts/TextToSpeechProvider";
+import {useTextToSpeech} from "@/contexts/tts/TextToSpeechContext";
+import {LLMProvider} from "@/contexts/llm/LLMProvider";
+import {useLLM} from "@/contexts/llm/LLMContext";
+import VoiceToTextProvider from "@/contexts/vtt/VoiceToTextProvider";
+
+// The type used to provide interface values to the context provider component
+type Props = {
+    children: React.ReactNode;
+}
+
+function LLMBridge(props: Readonly<Props>) {
+    // Get the function for reading text from the LLM using TTS
+    const { playTTS } = useTextToSpeech();
+
+    return (
+        <LLMProvider onResponse={playTTS}>
+            {props.children}
+        </LLMProvider>
+    )
+}
+
+function VoiceToTextBridge(props: Readonly<Props>) {
+    // Get the function for sending a message to the LLM when voice is transcribed to text
+    const { sendMessage } = useLLM();
+
+    return (
+        <VoiceToTextProvider onTranscriptionDone={sendMessage}>
+            {props.children}
+        </VoiceToTextProvider>
+    )
+}
+
+// React context provider component used to expose the context to children
+export default function AppProvider(props: Readonly<Props>): React.ReactNode {
+    // Memoize the context value to its no re-computed on renders unnecessarily
+    const value = React.useMemo<IAppContext>(() => {
+        return {}
+    }, []);
+
+    // Return the provider component
+    return (
+        <AppContext.Provider value={value}>
+            <TextToSpeechProvider>
+                <LLMBridge>
+                    <VoiceToTextBridge>
+                        {props.children}
+                    </VoiceToTextBridge>
+                </LLMBridge>
+            </TextToSpeechProvider>
+        </AppContext.Provider>
+    )
+}

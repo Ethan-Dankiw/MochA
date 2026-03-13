@@ -1,17 +1,19 @@
 import React from "react";
-import {UIMessage} from "ai";
+import {useLLM} from "@/contexts/llm/LLMContext";
 
-type Props = {
-    messages: Array<UIMessage>
-}
+type Props = {}
 
 export default function ChatMessages(props: Readonly<Props>): React.ReactNode {
+    // Get all the messages from the LLM
+    const {messages} = useLLM();
+
     return (
         <div className={"flex flex-col gap-4"}>
-            {props.messages.length == 0 && <p>No Messages</p>}
-            {props.messages.length > 0 && props.messages.map(message => (
+            {messages.length == 0 && <p>No Messages</p>}
+            {messages.length > 0 && messages.map(message => (
                 <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === 'user' ? 'bg-neutral-400 text-gray-900' : 'bg-neutral-700 text-neutral-300'} text-black`}>
+                    <div
+                        className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === 'user' ? 'bg-neutral-400 text-gray-900' : 'bg-neutral-700 text-neutral-300'} text-black`}>
                         <div className={"text-sm mb-2 font-bold"}>
                             <p>{message.role === 'user' ? 'You' : 'Advocate Agent'}</p>
                         </div>

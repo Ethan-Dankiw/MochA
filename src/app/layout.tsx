@@ -5,7 +5,9 @@ import {cn} from "@/lib/utils";
 import React from "react";
 import {ThemeProvider} from "next-themes";
 import PageHeader from "@/components/PageHeader";
-import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
+import {SidebarProvider} from "@/components/ui/sidebar";
+import AppProvider from "@/contexts/app/AppProvider";
+import {Toaster} from "@/components/ui/sonner";
 
 const jetbrainsMono = JetBrains_Mono({subsets: ['latin'], variable: '--font-mono'});
 
@@ -35,12 +37,15 @@ export default function RootLayout(props: Readonly<Props>) {
             className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col overflow-hidden`}
         >
         <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true} disableTransitionOnChange={true}>
-            <SidebarProvider className={"flex-col flex-1 min-h-0 overflow-hidden"}>
-                <PageHeader />
-                <main className={"flex-1 flex flex-col min-h-0 overflow-hidden"}>
-                    {props.children}
-                </main>
-            </SidebarProvider>
+            <AppProvider>
+                <SidebarProvider className={"flex-col flex-1 min-h-0 overflow-hidden"}>
+                    <PageHeader/>
+                    <main className={"flex-1 flex flex-col min-h-0 overflow-hidden"}>
+                        {props.children}
+                    </main>
+                    <Toaster/>
+                </SidebarProvider>
+            </AppProvider>
         </ThemeProvider>
         </body>
         </html>
