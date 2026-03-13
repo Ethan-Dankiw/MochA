@@ -1,6 +1,6 @@
 import React from "react";
 import CodeEditor from "@/components/CodeEditor";
-import ChatSidebar from "@/components/chatbot/ChatSidebar";
+import ChatSidebar from "@/components/sidebar/ChatSidebar";
 import {SidebarInset} from "@/components/ui/sidebar";
 
 type Props = {

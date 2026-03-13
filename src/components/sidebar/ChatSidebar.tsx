@@ -2,8 +2,8 @@
 
 import React from "react";
 import {useChat} from "@ai-sdk/react";
-import ChatMessages from "@/components/chatbot/ChatMessages";
-import ChatMessageInput from "@/components/chatbot/ChatMessageInput";
+import ChatMessages from "@/components/sidebar/chatbot/ChatMessages";
+import ChatMessageInput from "@/components/sidebar/chatbot/ChatMessageInput";
 import {Sidebar, SidebarContent, SidebarFooter} from "@/components/ui/sidebar";
 
 type Props = {
