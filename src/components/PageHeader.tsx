@@ -34,15 +34,23 @@ export default function PageHeader(props: Readonly<Props>): React.ReactNode {
                         <StyledLink href={"/about"} className={'p-2'}>About</StyledLink>
                     </li>
                 </ul>
-                <ul className={"flex flex-row gap-2"}>
-                    <li>
-                        <StyledLink href={"/auth/login"} className={'p-2'}>Login</StyledLink>
-                    </li>
-                    <p>or</p>
-                    <li>
-                        <StyledLink href={"/auth/signup"} className={'p-2'}>Sign-Up</StyledLink>
-                    </li>
-                </ul>
+                {/* Right Side: Conditional Auth Links */}
+                {!session?.authenticated ? (
+                    <ul className="flex flex-row gap-2 items-center">
+                        <li>
+                            <StyledLink href="/api/auth/signin" className="p-2">Login</StyledLink>
+                        </li>
+                        <li className="text-muted-foreground/40 text-xs font-mono lowercase">or</li>
+                        <li>
+                            <StyledLink href="/api/auth/signin" className="p-2 font-medium">Sign-Up</StyledLink>
+                        </li>
+                    </ul>
+                ) : (
+                    
+                    <StyledLink href={`/profile/${session.user_id}`} className="p-2">
+                        Profile
+                    </StyledLink>
+                )}
                 <ThemeMenu />
             </nav>
         </header>
