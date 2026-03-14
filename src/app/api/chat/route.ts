@@ -91,43 +91,6 @@ const getBasePrompt = async (): Promise<string | null> => {
 	return cached_prompt;
 };
 
-export async function POST(req: Request) {
-	const { messages, currentCode, difficulty, mode } = await req.json();
-	const isBehaviouralMode = mode === "behavioural";
-
-	const base_prompt = isBehaviouralMode ? await getBehaviouralPrompt() : await getBasePrompt();
-	if (!base_prompt) {
-		return new Response("Internal Server Error: No prompt found", { status: 500 });
-	}
-
-	const behavioral = isBehaviouralMode ? null : pickRandom(await getBehavioralQuestions());
-	const leetcodeDifficulty = normalizeDifficulty(difficulty);
-	const leetcode = isBehaviouralMode ? null : await getRandomLeetCodeQuestion(leetcodeDifficulty);
-
-	const behavioralSection = behavioral ? `\n\n=== BEHAVIORAL QUESTION ===\n${behavioral}\n` : "";
-
-	const leetcodeSection = leetcode
-		? `\n\n=== LEETCODE QUESTION ===
-Title: ${leetcode.title}
-Difficulty: ${leetcode.difficulty}
-URL: ${leetcode.url}
-Description:
-${leetcode.description ?? "No description available."}
-`
-		: "";
-
-	const codeSection = !isBehaviouralMode && currentCode ? `\n\n=== LIVE EDITOR STATE ===\n${currentCode}\n` : "";
-
-	const prompt = `${base_prompt}${behavioralSection}${leetcodeSection}${codeSection}`;
-
-	const result = streamText({
-		model: groq("llama-3.3-70b-versatile"),
-		system: prompt,
-		messages: await convertToModelMessages(messages),
-	});
-
-	return result.toUIMessageStreamResponse();
-}
 
 const getTimeoutPrompt = async (): Promise<string | null> => {
     if (cached_timeout_prompt) return cached_timeout_prompt;

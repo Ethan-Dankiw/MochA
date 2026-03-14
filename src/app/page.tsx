@@ -1,6 +1,19 @@
+"use client"
+
 import Link from "next/link"
+import React from "react";
+import {SessionPayload} from "@/lib/types/session";
+import {getSessionPayload} from "@/lib/session/session";
 
 export default function HomePage() {
+    const [session, setSession] = React.useState<SessionPayload | null>(null);
+
+    React.useEffect(() => {
+        // Get the session
+        getSessionPayload().then(session => setSession(session));
+    }, [])
+
+
     return (
         <main className="flex min-h-screen flex-col items-center justify-center bg-primary px-6">
             <div className="max-w-2xl text-center">
@@ -14,19 +27,21 @@ export default function HomePage() {
                 </p>
 
                 <div className="flex gap-4 justify-center">
-                    <Link
-                        href="/auth/login"
-                        className="px-6 py-3 rounded-md! bg-button-primary! text-button-primary-foreground! hover:bg-button-primary-hover! hover:text-button-primary-foreground-hover!"
-                    >
-                        Login
-                    </Link>
-
-                    <Link
-                        href="/interview/choose"
-                        className="rounded-lg border-2 border-button-primary-foreground px-6 py-3 hover:bg-button-primary"
-                    >
-                        Start Interview
-                    </Link>
+                    {!session?.authenticated ? (
+                        <Link
+                            href="/auth/login"
+                            className="px-6 py-3 rounded-md! bg-button-primary! text-button-primary-foreground! hover:bg-button-primary-hover! hover:text-button-primary-foreground-hover!"
+                        >
+                            Login
+                        </Link>
+                    ):(
+                        <Link
+                            href="/interview/choose"
+                            className="rounded-lg border-2 border-button-primary-foreground px-6 py-3 hover:bg-button-primary"
+                        >
+                            Start Interview
+                        </Link>
+                    )}
                 </div>
             </div>
         </main>
