@@ -1,8 +1,12 @@
-// src/app/about/page.tsx
+"use client"
+
 import React from "react";
+import {useSession} from "@/components/contexts/session/SessionContext";
 import Link from "next/link";
 
 export default function AboutPage() {
+    const {session} = useSession();
+
     return (
         <div className="min-h-screen flex flex-col bg-primary">
             {/* Header */}
@@ -36,12 +40,14 @@ export default function AboutPage() {
                     </p>
 
                     <div className="flex gap-4 justify-center">
-                        <Link
-                            href="/interview/choose"
-                            className="rounded-lg border font-medium border-button-primary-foreground px-6 py-3 hover:bg-button-primary"
-                        >
-                            Start Interview
-                        </Link>
+                        {session?.authenticated && (
+                            <Link
+                                href="/interview/choose"
+                                className="rounded-lg border font-medium border-button-primary-foreground px-6 py-3 hover:bg-button-primary"
+                            >
+                                Start Interview
+                            </Link>
+                        )}
                     </div>
                 </div>
             </main>

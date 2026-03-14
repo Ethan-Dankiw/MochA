@@ -3,10 +3,6 @@
 import React from "react";
 import {ThemeMenu} from "@/components/ThemeMenu";
 import StyledLink from "@/components/StyledLink";
-import {SessionPayload} from "@/lib/types/session";
-import {getSessionPayload} from "@/lib/session/session";
-import { signOut } from "next-auth/react";
-import { destroySession } from "@/lib/session/session";
 import {useSession} from "@/components/contexts/session/SessionContext";
 
 const transition = "transition-all duration-300";
