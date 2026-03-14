@@ -16,10 +16,12 @@ export default function ChatMessages(props: Readonly<Props>): React.ReactNode {
     }, [messages]);
 
     return (
-        <div className={"flex flex-col gap-4"}>
+        <div className={"flex flex-col flex-1 overflow-y-auto p-4"}>
             {/* 2. Check visibleMessages length, not raw messages */}
             {visibleMessages.length === 0 && (
-                <p className="text-center text-neutral-500 py-10">No Messages Yet</p>
+                <div className="flex flex-1 items-center justify-center w-full">
+                    <p className="text-center text-neutral-500">No Messages Yet</p>
+                </div>
             )}
             
             {/* 3. Map over the filtered list directly */}

@@ -18,15 +18,22 @@ export default function InterviewPage(props: Readonly<Props>): React.ReactNode {
 
     return (
         <div className={"flex flex-1 min-h-0 overflow-hidden"}>
+
             <SidebarInset className={"flex flex-col flex-1 min-h-0"}>
                 <div className={"flex-1"}>
                     <CodeEditor initialCode={'console.log("Hello from Monaco!");'} />
                 </div>
             </SidebarInset>
 
-            <Timer/>
+            <div className="flex flex-col border-l border-neutral-800">
+                <div className="p-4 border-b border-neutral-800 sticky top-0 bg-neutral-950 z-10 bg-primary">
+                    <Timer />
+                </div>
 
-            <ChatSidebar />
+                <div className="flex-1 min-h-0">
+                    <ChatSidebar />
+                </div>
+            </div>
         </div>
     );
 }
