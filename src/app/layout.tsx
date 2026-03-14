@@ -32,11 +32,11 @@ type Props = {
 
 export default function RootLayout(props: Readonly<Props>) {
     return (
-        <html lang="en" className={cn("font-mono", jetbrainsMono.variable)} suppressHydrationWarning={true}>
+        <html lang="en" className={`${cn("font-mono", jetbrainsMono.variable)}`} suppressHydrationWarning={true}>
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col overflow-hidden`}
         >
-        <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true} disableTransitionOnChange={true}>
+        <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true} disableTransitionOnChange={false}>
             <AppProvider>
                 <SidebarProvider className={"flex-col flex-1 min-h-0 overflow-hidden"}>
                     <PageHeader/>

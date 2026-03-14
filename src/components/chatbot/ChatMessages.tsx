@@ -13,7 +13,7 @@ export default function ChatMessages(props: Readonly<Props>): React.ReactNode {
             {messages.length > 0 && messages.map(message => (
                 <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div
-                        className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === 'user' ? 'bg-neutral-400 text-gray-900' : 'bg-neutral-700 text-neutral-300'} text-black`}>
+                        className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'} text-black`}>
                         <div className={"text-sm mb-2 font-bold"}>
                             <p>{message.role === 'user' ? 'You' : 'Advocate Agent'}</p>
                         </div>
