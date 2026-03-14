@@ -1,23 +1,56 @@
-"use client"
+"use client";
 
-import React from "react";
-import {Editor} from "@monaco-editor/react";
+import React, { useEffect, useRef, useState } from "react";
+import { Editor } from "@monaco-editor/react";
+import * as monaco from "monaco-editor";
 
 type Props = {
-    initialCode?: string;
-}
+  initialCode?: string;
+};
 
 export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
-    // Store the written code
-    const [code, setCode] = React.useState<string | null>(props.initialCode ?? null);
+  const [code, setCode] = useState<string | null>(props.initialCode ?? null);
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const monacoRef = useRef<typeof monaco | null>(null);
 
-    return (
-        <Editor
-            height={"100%"}
-            defaultLanguage="javascript"
-            defaultValue={props.initialCode}
-            onChange={(value) => setCode(value || "")}
-            theme="vs-dark"
-        />
-    );
+  const myCremeTheme = React.useMemo<monaco.editor.IStandaloneThemeData>(() => ({
+    base: "vs",
+  inherit: false, // prevent vs-light from overriding
+  rules: [
+    { token: "", foreground: "#573e23" }, // default text color (light brown)
+    // you can add more token rules here if you want syntax highlighting
+  ],
+  colors: {
+    "editor.background": "#ccbfaf",           // creme background
+    "editor.foreground": "#8B7355",           // light brown text
+    "editorLineNumber.foreground": "#8B7355",
+    "editorCursor.foreground": "#6B4F3B",
+    "editorIndentGuide.background": "#E8E1D5",
+    },
+  }), []);
+
+  // Called when editor mounts
+  function handleEditorMount(editor: monaco.editor.IStandaloneCodeEditor, monaco: typeof import("monaco-editor")) {
+    editorRef.current = editor;
+    monacoRef.current = monaco;
+  }
+
+  // Apply theme using useEffect
+  useEffect(() => {
+    if (monacoRef.current) {
+      monacoRef.current.editor.defineTheme("creme-theme", myCremeTheme);
+      monacoRef.current.editor.setTheme("creme-theme");
+    }
+  }, [myCremeTheme]); // empty dependency = run once
+
+  return (
+    <Editor
+      height="100%"
+      defaultLanguage="javascript"
+      defaultValue={props.initialCode}
+      onMount={handleEditorMount}
+      theme="creme-theme"
+      onChange={(value) => setCode(value || "")}
+    />
+  );
 }
