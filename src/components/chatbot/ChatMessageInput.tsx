@@ -52,7 +52,7 @@ export default function ChatMessageInput(props: Readonly<Props>): React.ReactNod
                         type={"button"} onClick={toggleRecording} disabled={inInputDisabled}
                         className={`flex-1 rounded-md transition-colors disabled:cursor-no-drop ${
                             isRecording ? 'bg-red-500 hover:bg-red-600 animate-pulse text-white' :
-                                'bg-neutral-600 hover:bg-neutral-500 text-neutral-300 hover:text-neutral-200'
+                                'rounded-md! bg-button-primary! text-button-primary-foreground! hover:bg-button-primary-hover! hover:text-button-primary-foreground-hover!'
                         }`}
                         title={isRecording ? 'Stop recording' : 'Start voice input'}
                     >
@@ -68,11 +68,11 @@ export default function ChatMessageInput(props: Readonly<Props>): React.ReactNod
                                     "Type your message..."
                         }
                         value={message ?? ""} onChange={(e) => setMessage(e.target.value)}
-                        className={`flex-1 rounded-lg border-2 border-neutral-600 px-2 py-2 text-block outline-none focus:ring-2 focus:ring-red-400 disabled:cursor-no-drop`}/>
+                        className={`bg-primary! placeholder:text-primary-foreground text-primary-foreground flex-1 rounded-lg border-none px-2 py-2 outline-none focus:ring-2 focus:ring-red-400 disabled:cursor-no-drop`}/>
                 </Field>
                 <Field className={"flex w-min"}>
                     <Button type={"submit"} disabled={inInputDisabled}
-                            className={`flex-1 rounded-md bg-blue-300 hover:bg-blue-400 active:bg-blue-500 px-4 py-2 disabled:opacity-50 disabled:cursor-no-drop`}>
+                            className={`flex-1 rounded-md bg-button-primary! text-button-primary-foreground! hover:bg-button-primary-hover! hover:text-button-primary-foreground-hover! px-4 py-2 disabled:opacity-50 disabled:cursor-no-drop`}>
                         <span>{messageStatus === 'streaming' ? '...' : 'Send'}</span>
                     </Button>
                 </Field>
