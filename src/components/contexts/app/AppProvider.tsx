@@ -8,6 +8,8 @@ import {LLMProvider} from "@/components/contexts/llm/LLMProvider";
 import {useLLM} from "@/components/contexts/llm/LLMContext";
 import VoiceToTextProvider from "@/components/contexts/vtt/VoiceToTextProvider";
 import {CodeProvider} from "@/components/contexts/code/CodeProvider";
+import {SessionProvider} from "@/components/contexts/session/SessionProvider";
+import {InterviewProvider} from "@/components/contexts/interview/InterviewProvider";
 
 
 // The type used to provide interface values to the context provider component
@@ -47,15 +49,19 @@ export default function AppProvider(props: Readonly<Props>): React.ReactNode {
     // Return the provider component
     return (
         <AppContext.Provider value={value}>
-            <CodeProvider>
-                <TextToSpeechProvider>
-                    <LLMBridge>
-                        <VoiceToTextBridge>
-                            {props.children}
-                        </VoiceToTextBridge>
-                    </LLMBridge>
-                </TextToSpeechProvider>
-            </CodeProvider>
+            <SessionProvider>
+                <CodeProvider>
+                    <InterviewProvider>
+                        <TextToSpeechProvider>
+                            <LLMBridge>
+                                <VoiceToTextBridge>
+                                    {props.children}
+                                </VoiceToTextBridge>
+                            </LLMBridge>
+                        </TextToSpeechProvider>
+                    </InterviewProvider>
+                </CodeProvider>
+            </SessionProvider>
         </AppContext.Provider>
     )
 }

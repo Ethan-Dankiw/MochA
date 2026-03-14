@@ -9,17 +9,17 @@ import {signIn} from "next-auth/react"
 import {loginUser} from "@/actions/login";
 import React from "react";
 import {redirect} from "next/navigation";
+import {useSession} from "@/components/contexts/session/SessionContext";
 
 
 export function LoginForm({className, ...props}: React.ComponentProps<"div">) {
+    const {refreshSession} = useSession();
     const [email, setEmail] = React.useState<string>("")
     const [password, setPassword] = React.useState<string>("")
 
     const handleSubmit = async () => {
-        const result = await loginUser(email, password)
-
-        console.log(result)
-
+        await loginUser(email, password)
+        await refreshSession()
         redirect("/")
     }
 

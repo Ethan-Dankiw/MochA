@@ -1,8 +1,15 @@
-// src/app/about/page.tsx
+"use client"
+
 import React from "react";
+import {useSession} from "@/components/contexts/session/SessionContext";
 import Link from "next/link";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Button} from "@/components/ui/button";
+import StyledLink from "@/components/StyledLink";
 
 export default function AboutPage() {
+    const {session} = useSession();
+
     return (
         <div className="min-h-screen flex flex-col bg-primary">
             {/* Header */}
@@ -36,12 +43,21 @@ export default function AboutPage() {
                     </p>
 
                     <div className="flex gap-4 justify-center">
-                        <Link
-                            href="/interview/choose"
-                            className="rounded-lg border font-medium border-button-primary-foreground px-6 py-3 hover:bg-button-primary"
-                        >
-                            Start Interview
-                        </Link>
+                        {session?.authenticated && (
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button variant={"default"}
+                                            className={"h-[inherit]! cursor-pointer rounded-lg border-2 border-button-primary-foreground px-6 py-3 hover:bg-button-primary"}>
+                                        <span className={"text-lg"}>Start Interview</span>
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className={'rounded-md w-48'}>
+                                    <StyledLink href="/interview/code" className={"text-md text-center"}>Technical
+                                        Interview</StyledLink>
+                                    {/*<StyledLink href="/interview/behaviour" className={"text-md text-center"}>Behavioural Interview</StyledLink>*/}
+                                </PopoverContent>
+                            </Popover>
+                        )}
                     </div>
                 </div>
             </main>
