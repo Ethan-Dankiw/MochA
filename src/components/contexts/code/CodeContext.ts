@@ -1,12 +1,15 @@
 "use client"
 
 import React from "react"
+import {SupportedLanguages} from "@/lib/types/languages";
 
 
 // The context value used when using the context
 export interface ICodeContext {
-    setCode: (code: string) => void
     code: string,
+    setCode: (code: string) => void
+    language: SupportedLanguages,
+    setLanguage: (language: SupportedLanguages) => void,
 }
 
 

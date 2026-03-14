@@ -8,6 +8,7 @@ import {Input} from "@/components/ui/input"
 import {signIn} from "next-auth/react"
 import {loginUser} from "@/actions/login";
 import React from "react";
+import {redirect} from "next/navigation";
 
 
 export function LoginForm({className, ...props}: React.ComponentProps<"div">) {
@@ -18,6 +19,8 @@ export function LoginForm({className, ...props}: React.ComponentProps<"div">) {
         const result = await loginUser(email, password)
 
         console.log(result)
+
+        redirect("/")
     }
 
     return (

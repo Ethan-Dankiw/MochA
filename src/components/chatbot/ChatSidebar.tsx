@@ -12,8 +12,8 @@ type Props = {
 
 export default function ChatSidebar(props: Readonly<Props>): React.ReactNode {
     return (
-        <Sidebar side={"right"} collapsible={"none"} className={`border-l bg-sidebar-background h-full ${props.className}`}>
-            <SidebarContent className={"flex-1 min-h-0 overflow-y-auto p-4 custom-scrollbar"}>
+        <Sidebar side={"right"} collapsible={"none"} className={`bg-sidebar-background h-full ${props.className}`}>
+            <SidebarContent className={"flex-1 min-h-0 overflow-y-auto custom-scrollbar"}>
                 <ChatMessages />
             </SidebarContent>
             <SidebarFooter className={"shrink-0 p-4 border-t border-border"}>

@@ -27,10 +27,10 @@ function LLMBridge(props: Readonly<Props>) {
 
 function VoiceToTextBridge(props: Readonly<Props>) {
     // Get the function for sending a message to the LLM when voice is transcribed to text
-    const { sendMessage } = useLLM();
+    const { send } = useLLM();
 
     return (
-        <VoiceToTextProvider onTranscriptionDone={sendMessage}>
+        <VoiceToTextProvider onTranscriptionDone={send}>
             {props.children}
         </VoiceToTextProvider>
     )

@@ -1,10 +1,11 @@
 "use client";
 
-import React, {useEffect, useRef} from "react";
+import React, {useRef} from "react";
 import * as monaco from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
 import {useCode} from "@/components/contexts/code/CodeContext";
 import {useTheme} from "next-themes";
+import LanguageSelector from "@/components/LanguageSelector";
 
 type Props = {
     initialCode?: string;
@@ -12,7 +13,7 @@ type Props = {
 
 export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-    const {setCode} = useCode();
+    const {code, setCode, language} = useCode();
     const { resolvedTheme } = useTheme();
 
     // On load set the default code
@@ -85,22 +86,21 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
         editorRef.current = editor
     }
 
-    // Determine the theme being used
-    const theme = resolvedTheme === 'dark' ? "espresso-dark" : "creme-light";
-
     return (
-        <Editor
-            height="100%"
-            defaultLanguage="javascript"
-            defaultValue={props.initialCode}
-            onChange={(value) => setCode(value || "")}
-            beforeMount={mountThemes}
-            onMount={mountEditor}
-            theme={theme}
-            options={{
-                minimap: { enabled: false },
-                smoothScrolling: true,
-            }}
-        />
+        <div className={"h-full relative"}>
+            <Editor
+                height="100%"
+                language={language}
+                value={code}
+                onChange={(value) => setCode(value || "")}
+                beforeMount={mountThemes}
+                onMount={mountEditor}
+                theme={resolvedTheme === 'dark' ? "espresso-dark" : "creme-light"}
+                options={{
+                    minimap: { enabled: false },
+                    smoothScrolling: true,
+                }}
+            />
+        </div>
     );
 }
