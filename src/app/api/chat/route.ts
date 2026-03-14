@@ -1,36 +1,35 @@
 import {groq} from '@ai-sdk/groq';
 import {convertToModelMessages, streamText} from 'ai';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import FileUtils from "@/lib/utils/FileUtils";
 
 export const maxDuration = 20;
 
 // Define the base prompt that is sent to initialise the AI with instructions on how to act
-let cached_base_prompt: string | null = null;
+let cached_prompt: string | null = null;
 
 /**
  * Get the contents of the AI's prompt from disk
  */
 const getBasePrompt = async (): Promise<string | null> => {
     // If the prompt has already been cached
-    if (cached_base_prompt) {
-        return cached_base_prompt;
+    if (cached_prompt) {
+        return cached_prompt;
     }
 
-    // Otherwise, fetch it from disk
-    try {
-        // Get the file path to the prompt file
-        const prompt_file_path = path.join(process.cwd(), 'src', 'lib', 'data', 'prompt.txt');
+    // Build the file path to the prompt file
+    const prompt_file_path = FileUtils.buildRelativePath('src', 'lib', 'data', 'prompt.txt')
 
-        // Attempt to read the contents of the prompt text file
-        cached_base_prompt = await fs.readFile(prompt_file_path, 'utf8');
+    // Get the file from disk
+    cached_prompt = await FileUtils.readFile(prompt_file_path);
 
-        // Return the prompt
-        return cached_base_prompt;
-    } catch (error) {
-        console.error("Failed to read prompt.txt:", error);
+    // If no file contents exists
+    if (!cached_prompt) {
+        console.error("Failed to read prompt.txt");
         return null;
     }
+
+    // Return the prompt
+    return cached_prompt;
 }
 
 export async function POST(req: Request) {

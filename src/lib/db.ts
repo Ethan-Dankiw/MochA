@@ -3,7 +3,7 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import path from 'node:path';
-import { Problem, ProblemSchema } from './problemSchema';
+import { LeetcodeQuestion, LeetcodeSchema } from './types/leetcode';
 
 
 export async function getLeetcodeDb() {
@@ -14,7 +14,7 @@ export async function getLeetcodeDb() {
     });
 }
 
-export async function getProblems(limit = 10): Promise<Problem[]> {
+export async function getProblems(limit = 10): Promise<LeetcodeQuestion[]> {
     const db = await getLeetcodeDb();
     const rows = await db.all('SELECT * FROM problems LIMIT ?', limit);
     await db.close();
@@ -26,7 +26,7 @@ export async function getProblems(limit = 10): Promise<Problem[]> {
             paidOnly: row.paidOnly === 1
         };
 
-        const validated = ProblemSchema.parse(normalizedRow);
+        const validated = LeetcodeSchema.parse(normalizedRow);
 
         return {
             ...validated,
