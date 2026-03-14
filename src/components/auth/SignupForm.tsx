@@ -6,13 +6,14 @@ import {Field, FieldDescription, FieldGroup, FieldLabel,} from "@/components/ui/
 import {Input} from "@/components/ui/input"
 import {signIn} from "next-auth/react"
 import React from "react";
-import {register} from "node:module";
 import {registerUser} from "@/actions/register";
 import {toast} from "sonner";
 import {redirect} from "next/navigation";
+import {useSession} from "@/components/contexts/session/SessionContext";
 
 
 export function SignupForm({...props}: React.ComponentProps<typeof Card>) {
+    const {refreshSession} = useSession();
     const [name, setName] = React.useState("")
     const [email, setEmail] = React.useState("")
     const [password, setPassword] = React.useState("")
@@ -25,10 +26,8 @@ export function SignupForm({...props}: React.ComponentProps<typeof Card>) {
             return;
         }
 
-        const result = await registerUser(email, name, password)
-
-        console.log(result)
-
+        await registerUser(email, name, password)
+        await refreshSession()
         redirect("/")
     }
 

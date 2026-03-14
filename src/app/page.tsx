@@ -5,29 +5,10 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Button} from "@/components/ui/button";
 import React from "react";
 import StyledLink from "@/components/StyledLink";
-import {getSessionPayload} from "@/lib/session/session";
+import {useSession} from "@/components/contexts/session/SessionContext";
 
 export default function HomePage() {
-    const [loading, setLoading] = React.useState(true);
-    const [authenticated, setAuthenticated] = React.useState(false);
-
-    React.useEffect(() => {
-        // Start loading
-        setLoading(true);
-
-        // Get the session payload
-        getSessionPayload().then(payload => {
-            // If the payload does not exist
-            if (!payload) {
-                return;
-            }
-
-            // Set the authentication status based on the session
-            setAuthenticated(payload.authenticated);
-        }).finally(() => {
-            setLoading(false);
-        })
-    }, [])
+    const {session} = useSession();
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center bg-primary px-6">
@@ -42,7 +23,7 @@ export default function HomePage() {
                 </p>
 
                 <div className="flex gap-4 justify-center">
-                    {authenticated ? (
+                    {session?.authenticated ? (
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button variant={"default"}

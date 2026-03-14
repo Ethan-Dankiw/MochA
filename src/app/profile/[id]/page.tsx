@@ -1,16 +1,13 @@
-import { getUserById, getUserProgress } from "@/lib/database/userquery";
-import { notFound } from "next/navigation";
+import {getUserById, getUserProgress} from "@/lib/database/userquery";
+import {notFound} from "next/navigation";
 import SkillTree from "@/components/profile/skilltree";
 
-export default async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProfilePage({params}: { params: Promise<{ id: string }> }) {
     // 1. Properly await and decode params
-    const { id } = await params;
-    
-    // 2. Resolve User - The "Guard" that prevents 'possibly null' errors
-    console.log("Current ID Segment:", id);
+    const {id} = await params;
 
-    const userData = await getUserById(id); 
-    if (!userData) { 
+    const userData = await getUserById(id);
+    if (!userData) {
         console.log("Database lookup failed for ID:", id);
         return notFound();
     }
@@ -38,53 +35,57 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
     };
 
     return (
-        <div className="p-32 max-w-7xl mx-auto min-h-screen bg-background text-foreground font-sans antialiased">
-    
-            <header className="mb-24">
-                <h1 className="text-5xl font-normal tracking-tight">
-                    {progress.user.name || "Candidate"} <span className="text-muted-foreground font-light"> Statistics</span>
-                </h1>
-            </header>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                {/* Stats Section - Using rounded pill containers */}
-                <div className="lg:col-span-4 space-y-10">
-                    <section className="space-y-6">
-                        <div className="flex flex-col gap-2">
-                            <p className="text-xs font-mono text-muted-foreground/60 lowercase pl-1">sessions</p>
-                            <div className="inline-flex items-center px-6 py-3 rounded-full bg-secondary/30 border border-border/50 w-fit">
-                                <span className="text-4xl font-light tracking-tighter tabular-nums text-foreground">
-                                    {progress.total_interviews}
-                                </span>
+        <div
+            className="flex justify-center p-32 w-full h-full mx-auto bg-primary font-sans antialiased">
+            <div className={"w-1/2"}>
+                <header className="mb-24">
+                    <h1 className="text-5xl font-normal tracking-tight text-center">
+                        <span className={"font-bold"}>{progress.user.name || "Candidate"}</span>
+                        <span className="font-light"> Statistics</span>
+                    </h1>
+                </header>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                    {/* Stats Section - Using rounded pill containers */}
+                    <div className="bg-sidebar-background rounded-md p-4 lg:col-span-4 space-y-10">
+                        <section className="flex flex-col justify-evenly gap-6 h-full">
+                            <div className="flex flex-col gap-2">
+                                <p className="text-md font-mono uppercase text-center">Interviews Started</p>
+                                <p className={"text-4xl text-center"}>{progress.total_interviews}</p>
                             </div>
-                        </div>
 
-                        <div className="flex flex-col gap-2">
-                            <p className="text-xs font-mono text-muted-foreground/60 lowercase pl-1">pass rate</p>
-                            <div className="inline-flex items-center px-6 py-3 rounded-full bg-button-primary/10 border border-button-primary/20 w-fit">
-                                <span className="text-4xl font-light tracking-tighter text-button-primary tabular-nums">
-                                    {progress.total_interviews > 0 
-                                        ? Math.round((progress.interviews_passed / progress.total_interviews) * 100) 
-                                        : 0}%
-                                </span>
+                            <hr/>
+
+                            <div className="flex flex-col gap-2">
+                                <p className="text-md font-mono uppercase text-center">Interviews Passed</p>
+                                <p className={"text-4xl text-center"}>{progress.interviews_passed}</p>
                             </div>
-                        </div>
-                    </section>
 
-                </div>
+                            <hr/>
 
-                {/* Matrix Section - Clean, Rounded Bento Card */}
-                <div className="lg:col-span-8 p-12 bg-card/20 rounded-[2.5rem] border border-border/40 flex items-center justify-center relative group transition-all duration-700 hover:bg-card/30">
-                    <div className="absolute top-8 left-10 flex items-center gap-2">
-                    </div>
-                    
-                    <div className="py-8">
-                        <SkillTree scores={skillScores} />
+                            <div className="flex flex-col gap-2">
+                                <p className="text-md font-mono uppercase text-center">Pass Rate</p>
+                                <p className={"text-4xl text-center"}>{progress.total_interviews > 0
+                                    ? Math.round((progress.interviews_passed / progress.total_interviews) * 100)
+                                    : 0}%</p>
+                            </div>
+                        </section>
                     </div>
 
-                    {/* Subtle aesthetic touch matching your Creme light mode */}
-                    <div className="absolute bottom-8 right-10">
-                        <div className="h-1.5 w-1.5 rounded-full bg-button-primary opacity-30" />
+                    {/* Matrix Section - Clean, Rounded Bento Card */}
+                    <div
+                        className="bg-sidebar-background rounded-lg lg lg:col-span-8 p-12 border border-border/40 flex items-center justify-center relative group transition-all duration-700">
+                        <div className="absolute top-8 left-10 flex items-center gap-2">
+                        </div>
+
+                        <div className="py-8">
+                            <SkillTree scores={skillScores}/>
+                        </div>
+
+                        {/* Subtle aesthetic touch matching your Creme light mode */}
+                        <div className="absolute bottom-8 right-10">
+                            <div className="h-1.5 w-1.5 rounded-full"/>
+                        </div>
                     </div>
                 </div>
             </div>
