@@ -3,6 +3,9 @@
 import React from "react"
 import {ChatStatus, UIMessage} from "ai";
 
+export const resetInterview = () => {
+    window.location.reload();
+};
 
 // The context value used when using the context
 export interface ILLMContext {

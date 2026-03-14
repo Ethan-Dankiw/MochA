@@ -87,8 +87,10 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
             setMessages([]);
             setSecondsLeft(DEFAULT_TIME);
             setIsTimerActive(false);
+            setCode("");
+            router.push("/chooseinterview");
         }
-    }), [messages, sendMessage, status, secondsLeft, isTimerActive, startTimer, code, setMessages]);
+    }), [messages, sendMessage, status, secondsLeft, isTimerActive, startTimer, code, setMessages, setCode, router]);
 
     return (
         <LLMContext.Provider value={value}>
