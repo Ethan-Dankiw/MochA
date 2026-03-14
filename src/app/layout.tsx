@@ -34,7 +34,7 @@ export default function RootLayout(props: Readonly<Props>) {
     return (
         <html lang="en" className={`${cn("font-mono", jetbrainsMono.variable)}`} suppressHydrationWarning={true}>
         <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col overflow-hidden`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col overflow-hidden text-foreground`}
         >
         <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true} disableTransitionOnChange={false}>
             <AppProvider>

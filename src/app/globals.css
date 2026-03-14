@@ -38,6 +38,7 @@
 
     /* Sidebar & Charts */
     --color-sidebar: var(--sidebar);
+    --color-sidebar-background: var(--sidebar-background);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar-primary: var(--sidebar-primary);
     --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
@@ -124,7 +125,7 @@
 .dark {
     /* PAGE */
     --background: oklch(0.296 0.024 58.538);
-    --foreground: oklch(0.95 0.03 80);
+    --foreground: oklch(0.863 0.07 60.336);
 
     /* CARDS & POPOVERS */
     --card: oklch(0.22 0.03 80);
@@ -133,16 +134,16 @@
     --popover-foreground: oklch(0.95 0.03 80);
 
     /* SHADCN PRIMARY */
-    --primary: oklch(0.465 0.052 73.645);
-    --primary-foreground: oklch(0.93 0.054 72.465);
+    --primary: oklch(0.331 0.029 57.802);
+    --primary-foreground: oklch(0.78 0.072 60.126);
 
     /* =========================================
        CUSTOM BUTTON VARIABLES
        ========================================= */
-    --button-primary: oklch(0.448 0.054 73.1);
-    --button-primary-hover: oklch(0.396 0.047 74.419);
-    --button-primary-foreground: oklch(0.93 0.054 72.465);
-    --button-primary-foreground-hover: oklch(0.878 0.062 71.678);
+    --button-primary: oklch(0.425 0.037 60.22);
+    --button-primary-hover: oklch(0.495 0.044 58.761);
+    --button-primary-foreground: oklch(0.78 0.072 60.126);
+    --button-primary-foreground-hover: oklch(0.861 0.079 60.835);
 
     /* SECONDARY / MUTED / ACCENT */
     --secondary: oklch(0.334 0.035 75.165);
