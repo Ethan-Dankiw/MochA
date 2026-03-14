@@ -14,10 +14,10 @@ export default function StartInterviewPage() {
 
   if (interviewType === "technical") {
     // Redirect to /interview with difficulty param
-    router.push(`/interview?type=technical&difficulty=${difficulty}`);
+    router.push(`/interview/code?difficulty=${difficulty}`);
   } else if (interviewType === "behavioural") {
     // Redirect to the new behavioural page
-    router.push("/behaviour");
+    router.push("/interview/behaviour");
   }
 };
 
