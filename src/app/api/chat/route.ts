@@ -7,7 +7,9 @@ export const maxDuration = 20;
 
 // Define the base prompt that is sent to initialise the AI with instructions on how to act
 let cached_prompt: string | null = null;
+let cached_behavioural_prompt: string | null = null;
 let cached_behavioral_questions: string[] | null = null;
+type Difficulty = "Easy" | "Medium" | "Hard";
 
 const pickRandom = <T>(items: T[]): T | null => (items.length ? items[Math.floor(Math.random() * items.length)] : null);
 
@@ -39,6 +41,34 @@ const getRandomLeetCodeQuestion = async (difficulty: "Easy" | "Medium" | "Hard" 
 	}
 };
 
+const normalizeDifficulty = (difficulty: unknown): Difficulty => {
+	if (typeof difficulty !== "string") {
+		return "Medium";
+	}
+
+	const normalized = difficulty.trim().toLowerCase();
+	if (normalized === "easy") return "Easy";
+	if (normalized === "hard") return "Hard";
+	if (normalized === "medium") return "Medium";
+	return "Medium";
+};
+
+const getBehaviouralPrompt = async (): Promise<string | null> => {
+	if (cached_behavioural_prompt) {
+		return cached_behavioural_prompt;
+	}
+
+	const behavioural_prompt_path = FileUtils.buildRelativePath("src", "lib", "data", "behavioural.txt");
+	cached_behavioural_prompt = await FileUtils.readFile(behavioural_prompt_path);
+
+	if (!cached_behavioural_prompt) {
+		console.error("Failed to read behavioural.txt");
+		return null;
+	}
+
+	return cached_behavioural_prompt;
+};
+
 /**
  * Get the contents of the AI's prompt from disk
  */
@@ -65,15 +95,17 @@ const getBasePrompt = async (): Promise<string | null> => {
 };
 
 export async function POST(req: Request) {
-	const { messages, currentCode, difficulty } = await req.json();
+	const { messages, currentCode, difficulty, mode } = await req.json();
+	const isBehaviouralMode = mode === "behavioural";
 
-	const base_prompt = await getBasePrompt();
+	const base_prompt = isBehaviouralMode ? await getBehaviouralPrompt() : await getBasePrompt();
 	if (!base_prompt) {
-		return new Response("Internal Server Error: No base prompt found", { status: 500 });
+		return new Response("Internal Server Error: No prompt found", { status: 500 });
 	}
 
-	const behavioral = pickRandom(await getBehavioralQuestions());
-	const leetcode = await getRandomLeetCodeQuestion(difficulty === "Easy" || difficulty === "Hard" ? difficulty : "Medium");
+	const behavioral = isBehaviouralMode ? null : pickRandom(await getBehavioralQuestions());
+	const leetcodeDifficulty = normalizeDifficulty(difficulty);
+	const leetcode = isBehaviouralMode ? null : await getRandomLeetCodeQuestion(leetcodeDifficulty);
 
 	const behavioralSection = behavioral ? `\n\n=== BEHAVIORAL QUESTION ===\n${behavioral}\n` : "";
 
@@ -87,7 +119,7 @@ ${leetcode.description ?? "No description available."}
 `
 		: "";
 
-	const codeSection = currentCode ? `\n\n=== LIVE EDITOR STATE ===\n${currentCode}\n` : "";
+	const codeSection = !isBehaviouralMode && currentCode ? `\n\n=== LIVE EDITOR STATE ===\n${currentCode}\n` : "";
 
 	const prompt = `${base_prompt}${behavioralSection}${leetcodeSection}${codeSection}`;
 
