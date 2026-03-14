@@ -20,7 +20,7 @@ export default function ChatMessages(props: Readonly<Props>): React.ReactNode {
             {/* 2. Check visibleMessages length, not raw messages */}
             {visibleMessages.length === 0 && (
                 <div className="flex flex-1 items-center justify-center w-full">
-                    <p className="text-center text-neutral-500">No Messages Yet</p>
+                    <p className="text-center">No Messages Yet</p>
                 </div>
             )}
             

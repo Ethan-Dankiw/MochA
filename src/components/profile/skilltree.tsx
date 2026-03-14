@@ -100,12 +100,12 @@ export default function SkillTree({ scores }: { scores: Record<string, number> }
               top: `${(y / size) * 100}%`,
               transform: "translate(-50%, -50%)",
             }}
-            className="flex flex-col items-center justify-center text-center select-none w-24"
+            className="flex flex-col items-center justify-center text-center select-none w-24 "
           >
-            <span className="text-[10px] font-mono text-muted-foreground/50 lowercase tracking-tight">
+            <span className="text-[10px] font-mono uppercase tracking-tight font-bold">
               {skill.name}
             </span>
-            <span className="text-[13px] font-sans font-light text-foreground opacity-80">
+            <span className="text-[13px] font-sans font-light text-foreground ">
               {scoreValue.toFixed(0)}
             </span>
           </div>

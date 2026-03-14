@@ -1,3 +1,5 @@
+'use server'
+
 import FileUtils from "@/lib/utils/FileUtils";
 import sqlite3 from "sqlite3";
 import {Database, open} from 'sqlite';
