@@ -27,6 +27,7 @@ import {
     type UserProgress,
     type CompleteSessionPayload,
 } from "@/lib/types/user";
+import {UuidUtils} from "@/lib/utils/UuidUtils";
 
 // ─── Users ────────────────────────────────────────────────────────────────────
 
@@ -64,7 +65,7 @@ export async function createEmailUser(
     passwordHash: string
 ): Promise<PublicUser> {
     const db = await loadDB();
-    const id = randomUUID();
+    const id = UuidUtils.generate();
 
     await db.run(
         `INSERT INTO users (id, email, name, password_hash, provider)
