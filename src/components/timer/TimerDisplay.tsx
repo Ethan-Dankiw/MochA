@@ -68,10 +68,10 @@ export default function TimerDisplay(props: Readonly<Props>): React.ReactNode {
         cancelTimer()
 
         // Send a start message
-        send("I would like to finish the the technical interview now! Please grade what I done!").then(() => {})
-
-        // Clear stored messages for when the user refreshes their page
-        clearMessages()
+        send("I would like to finish the the technical interview now! Please grade what I done!").then(() => {
+            // Clear stored messages for when the user refreshes their page
+            clearMessages()
+        })
     }
 
     const expireTimer = () => {
@@ -79,10 +79,10 @@ export default function TimerDisplay(props: Readonly<Props>): React.ReactNode {
         cancelTimer()
 
         // Send a start message
-        send("I would like to finish the the technical interview now! Please grade what I done even though I have not quite yet finished!").then(() => {})
-
-        // Clear stored messages for when the user refreshes their page
-        clearMessages()
+        send("I would like to finish the the technical interview now! Please grade what I done even though I have not quite yet finished!").then(() => {
+            // Clear stored messages for when the user refreshes their page
+            clearMessages()
+        })
     }
 
     const cancelTimer = () => {

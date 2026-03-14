@@ -46,7 +46,7 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
     // Memoize the initial load so it only happens once
     const initialMessages = React.useMemo(() => readMessagesFromStorage(storageKey), [storageKey]);
 
-    const {messages, sendMessage, status} = useChat({
+    const {messages, sendMessage, status, setMessages} = useChat({
         id: storageKey,
         messages: initialMessages,
         onFinish: ({message: response}) => {
@@ -67,13 +67,28 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
         }
     });
 
+    
+    const clear = React.useCallback(() => {
+        // Clear storage 
+        globalThis.localStorage.removeItem(storageKey);
+        
+    }, [storageKey]);
+
+    // Handle Cleaning Local Storage (Navigation/Unmount ONLY)
+    React.useEffect(() => {
+        // We don't do anything on mount
+        return () => {
+            // This runs ONLY when the LLMProvider is destroyed (navigating away)
+            globalThis.localStorage.removeItem(storageKey);
+        };
+    }, [storageKey]); // Only re-run if the key changes, not when messages change
+
     // Automatically sync messages to localStorage whenever they update
     React.useEffect(() => {
-        if (globalThis.window === undefined) {
-            return;
-        }
+        if (typeof window === "undefined") return;
         globalThis.localStorage.setItem(storageKey, JSON.stringify(messages));
     }, [messages, storageKey]);
+
 
     const send = React.useCallback(async (message: string) => {
         // Send the message with the code's attachment
@@ -90,12 +105,8 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
         );
     }, [sendMessage, code, difficulty, language])
 
-    const clear = React.useCallback(() => {
-        // Clear the stored messages
-        globalThis.localStorage.removeItem(storageKey);
-    }, [])
-
     // Memoize the context value to its no re-computed on renders unnecessarily
+    
     const value = React.useMemo<ILLMContext>(() => {
         return {
             messages: messages,
