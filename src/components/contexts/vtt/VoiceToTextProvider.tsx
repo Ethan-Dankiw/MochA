@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import {IVoiceToText, RecordingState, VoiceToTextContext} from "@/contexts/vtt/VoiceToTextContext";
+import {IVoiceToText, RecordingState, VoiceToTextContext} from "@/components/contexts/vtt/VoiceToTextContext";
 import transcribeAudio from "@/actions/transcribe";
 import {toast} from "sonner";
 

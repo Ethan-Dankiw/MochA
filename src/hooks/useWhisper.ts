@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useCallback } from 'react';
-import {RecordingState} from "@/contexts/vtt/VoiceToTextContext";
+import {RecordingState} from "@/components/contexts/vtt/VoiceToTextContext";
 
 export function useWhisper(onTranscript: (text: string) => void) {
   const [recordingState, setRecordingState] = useState<RecordingState>('idle');

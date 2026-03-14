@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import {getProblems} from "@/lib/db";
+import {getProblemsByDifficulty} from "@/lib/database/query";
 
 export async function GET() {
-  const problems = await getProblems(5);
+  // Get all the easy problems
+  const problems = await getProblemsByDifficulty("Easy");
   return NextResponse.json(problems);
 }

@@ -1,17 +1,23 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Editor } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
+import {Editor} from "@monaco-editor/react";
+import {useCode} from "@/components/contexts/code/CodeContext";
 
 type Props = {
   initialCode?: string;
 };
 
 export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
-  const [code, setCode] = useState<string | null>(props.initialCode ?? null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<typeof monaco | null>(null);
+    const {setCode} = useCode();
+
+    // On load set the default code
+    React.useEffect(() => {
+        setCode(props.initialCode ?? "");
+    }, [props.initialCode])
 
   const myCremeTheme = React.useMemo<monaco.editor.IStandaloneThemeData>(() => ({
     base: "vs",

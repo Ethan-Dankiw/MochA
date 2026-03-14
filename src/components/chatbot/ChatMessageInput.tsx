@@ -4,8 +4,8 @@ import React from "react";
 import {Field, FieldGroup} from "@/components/ui/field";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {useLLM} from "@/contexts/llm/LLMContext";
-import {useVoiceToText} from "@/contexts/vtt/VoiceToTextContext";
+import {useLLM} from "@/components/contexts/llm/LLMContext";
+import {useVoiceToText} from "@/components/contexts/vtt/VoiceToTextContext";
 import {Mic, Square} from "lucide-react";
 
 type Props = {}
