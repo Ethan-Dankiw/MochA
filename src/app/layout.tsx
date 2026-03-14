@@ -36,7 +36,8 @@ export default function RootLayout(props: Readonly<Props>) {
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col overflow-hidden text-foreground`}
         >
-        <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true} disableTransitionOnChange={false}>
+        <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true}
+                       disableTransitionOnChange={false}>
             <AppProvider>
                 <SidebarProvider className={"flex-col flex-1 min-h-0 overflow-hidden"}>
                     <PageHeader/>
