@@ -88,7 +88,7 @@
     --button-primary-foreground-hover: oklch(0.3 0.058 53.802);
 
     /* SECONDARY / MUTED / ACCENT */
-    --secondary: oklch(0.449 0.054 47.482);
+    --secondary: oklch(0.841 0.053 67.005);
     --secondary-foreground: oklch(0.98 0.02 85);
     --muted: oklch(0.92 0.03 75);
     --muted-foreground: oklch(0.55 0.03 60);
@@ -146,7 +146,7 @@
     --button-primary-foreground-hover: oklch(0.861 0.079 60.835);
 
     /* SECONDARY / MUTED / ACCENT */
-    --secondary: oklch(0.334 0.035 75.165);
+    --secondary: oklch(0.395 0.028 60.5);
     --secondary-foreground: oklch(0.95 0.03 80);
     --muted: oklch(0.28 0.03 80);
     --muted-foreground: oklch(0.65 0.03 80);
