@@ -1,60 +1,93 @@
 "use client"
 
 import React from "react"
-import {ILLMContext, LLMContext} from "@/components/contexts/llm/LLMContext";
-import {useChat} from "@ai-sdk/react";
-import {useCode} from "@/components/contexts/code/CodeContext";
+import { ILLMContext, LLMContext } from "@/components/contexts/llm/LLMContext";
+import { useChat } from "@ai-sdk/react";
+import { useCode } from "@/components/contexts/code/CodeContext";
 
-// The type used to provide interface values to the context provider component
 type Props = {
     children: React.ReactNode;
     onResponse: (response: string) => void;
 }
 
-// React context provider component used to expose the context to children
 export function LLMProvider(props: Readonly<Props>): React.ReactNode {
-    // Get the current state of the code editor's contents
-    const {code} = useCode()
+    const { code } = useCode();
+    const DEFAULT_TIME = 20; 
+    
+    const [secondsLeft, setSecondsLeft] = React.useState(DEFAULT_TIME); 
+    const [isTimerActive, setIsTimerActive] = React.useState(false);
 
-    const {messages, sendMessage, status} = useChat({
-        onFinish: ({message: response}) => {
-            // Convert the response to text by combining all the parts of the response message
+    // Sync signal string to avoid "sticky" history
+    const TIMEOUT_SIGNAL = "__INTERRUPT_SYSTEM_TIME_UP__";
+
+    const { messages, status, sendMessage, setMessages } = useChat({
+        onFinish: ({ message: response }) => {
             const text = response.parts
                 .filter(part => part.type === "text")
-                .map(part => part.text)
+                .map(part => (part as any).text)
                 .join(" ")
-                .trim()
+                .trim();
 
-            // If there is no contents to the response message
-            if (!text) {
-                return;
-            }
-
-            // Execute the on response called back for a successfully processed response message
+            if (!text) return;
             props.onResponse(text);
         }
     });
 
-    const send = React.useCallback(async (message: string) => {
-        // Send the message with the code's attachment
-        await sendMessage(
-            { text: message },
-            { body: {
-                currentCode: code
-            }}
-        );
-    }, [sendMessage, code])
+    React.useEffect(() => {
+        let interval: NodeJS.Timeout | null = null;
 
-    // Memoize the context value to its no re-computed on renders unnecessarily
-    const value = React.useMemo<ILLMContext>(() => {
-        return {
-            messages: messages,
-            sendMessage: send,
-            status: status
+        if (isTimerActive && secondsLeft > 0) {
+            interval = setInterval(() => {
+                setSecondsLeft((prev) => prev - 1);
+            }, 1000);
+        } else if (secondsLeft === 0 && isTimerActive) {
+            setIsTimerActive(false);
+            console.log("Time up! Triggering summary mode...");
+            
+            // Use a string here or your TIMEOUT_SIGNAL constant
+            sendMessage(
+                { text: "__INTERRUPT_SYSTEM_TIME_UP__" }, 
+                { body: { currentCode: code, isTimeout: true } }
+            );
         }
-    }, [messages, send, status]);
 
-    // Return the provider component
+        return () => { if (interval) clearInterval(interval); };
+    }, [isTimerActive, secondsLeft, sendMessage, code]);
+
+    const startTimer = React.useCallback(() => {
+        // 1. Reset the clock if it's currently at 0
+        if (secondsLeft <= 0) {
+            setSecondsLeft(DEFAULT_TIME);
+        }
+
+        // 2. Wipe the message history
+        // This ensures the backend doesn't see the previous summary 
+        // or the 'isTimeout' flag from the last session.
+        setMessages([]);
+
+        // 3. Re-activate the interval
+        setIsTimerActive(true);
+        
+        console.log("Session Reset: Timer restored and history cleared.");
+    }, [secondsLeft, setMessages, DEFAULT_TIME]);
+
+    const value = React.useMemo<ILLMContext>(() => ({
+        messages,
+        sendMessage: async (msg: string) => {
+            await sendMessage({ text: msg }, { body: { currentCode: code } });
+        },
+        status,
+        secondsLeft,
+        isTimerActive,
+        startTimer,
+        pauseTimer: () => setIsTimerActive(false),
+        resetInterview: () => {
+            setMessages([]);
+            setSecondsLeft(DEFAULT_TIME);
+            setIsTimerActive(false);
+        }
+    }), [messages, sendMessage, status, secondsLeft, isTimerActive, startTimer, code, setMessages]);
+
     return (
         <LLMContext.Provider value={value}>
             {props.children}

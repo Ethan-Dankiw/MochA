@@ -5,59 +5,53 @@ import path from 'node:path';
 
 export const maxDuration = 20;
 
-// Define the base prompt that is sent to initialise the AI with instructions on how to act
+// Define separate caches at the top of the file
 let cached_base_prompt: string | null = null;
+let cached_timeout_prompt: string | null = null; // New variable
 
-/**
- * Get the contents of the AI's prompt from disk
- */
 const getBasePrompt = async (): Promise<string | null> => {
-    // If the prompt has already been cached
-    if (cached_base_prompt) {
-        return cached_base_prompt;
-    }
-
-    // Otherwise, fetch it from disk
+    if (cached_base_prompt) return cached_base_prompt;
     try {
-        // Get the file path to the prompt file
-        const prompt_file_path = path.join(process.cwd(), 'src', 'lib', 'data', 'prompt.txt');
-
-        // Attempt to read the contents of the prompt text file
-        cached_base_prompt = await fs.readFile(prompt_file_path, 'utf8');
-
-        // Return the prompt
+        const file_path = path.join(process.cwd(), 'src', 'lib', 'data', 'prompt.txt');
+        cached_base_prompt = await fs.readFile(file_path, 'utf8');
         return cached_base_prompt;
-    } catch (error) {
-        console.error("Failed to read prompt.txt:", error);
-        return null;
-    }
+    } catch (e) { return null; }
+}
+
+const getTimeoutPrompt = async (): Promise<string | null> => {
+    // FIX: Check its OWN cache variable
+    if (cached_timeout_prompt) return cached_timeout_prompt;
+    try {
+        const file_path = path.join(process.cwd(), 'src', 'lib', 'data', 'timeout.txt');
+        cached_timeout_prompt = await fs.readFile(file_path, 'utf8');
+        return cached_timeout_prompt;
+    } catch (e) { return null; }
 }
 
 export async function POST(req: Request) {
-    // Fetch the message and current code from the request
-    const {messages, currentCode} = await req.json();
+    const { messages, currentCode, isTimeout } = await req.json();
 
-    // Get the base prompt for the AI
-    const base_prompt = await getBasePrompt();
+    // 1. Determine which system prompt to use
+    let systemInstruction: string;
 
-    // If the base prompt does not exist
-    if (!base_prompt) {
-        console.warn("No base prompt for the AI")
-        return new Response("Internal Server Error: No base prompt found", { status: 500 });
+    if (isTimeout) {
+        console.log("Timeout flag detected. Loading summary prompt...");
+        const timeoutPrompt = await getTimeoutPrompt();
+        systemInstruction = timeoutPrompt ?? "Interview over. Summarize performance.";
+    } else {
+        const basePrompt = await getBasePrompt();
+        systemInstruction = currentCode 
+            ? `${basePrompt}\n\n=== LIVE CODE ===\n${currentCode}`
+            : basePrompt ?? "";
     }
 
-    // Dynamically append the contents of the user's code editor in the prompt
-    const prompt = currentCode
-        ? `${base_prompt}\n\n=== LIVE EDITOR STATE ===\nThe candidate is currently writing the following code in their editor. Use this to understand their context and answer their queries:\n${base_prompt}\n`
-        : base_prompt
-
+    // 2. Execute with the CHOSEN system prompt
     const result = streamText({
         model: groq('llama-3.3-70b-versatile'),
-        system: prompt,
+        system: systemInstruction, // The logic is now entirely here
         messages: await convertToModelMessages(messages),
     });
 
     return result.toUIMessageStreamResponse();
 }
-
 
