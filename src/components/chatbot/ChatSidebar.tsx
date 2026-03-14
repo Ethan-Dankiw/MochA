@@ -12,7 +12,9 @@ type Props = {
 
 export default function ChatSidebar(props: Readonly<Props>): React.ReactNode {
     return (
-        <Sidebar side={"right"} collapsible={"none"} className={"border-l bg-background h-full"}>
+        <Sidebar side={"right"} collapsible={"none"} className={"border-l bg-background h-full"} style={{
+                backgroundColor: "var(--sidebar-background)", color: "var(--sidebar-foreground)"
+                }}>
             <SidebarContent className={"flex-1 min-h-0 overflow-y-auto p-4 custom-scrollbar"}>
                 <ChatMessages />
             </SidebarContent>
