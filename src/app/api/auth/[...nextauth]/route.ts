@@ -5,8 +5,10 @@
 import NextAuth, { AuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { upsertGoogleUser } from "@/lib/database/userquery"
+import { createSession } from "@/lib/session/session";
 
 export const authOptions: AuthOptions = {
+    secret: process.env.SESSION_SECRET,
     providers: [
         GoogleProvider({
             clientId:     process.env.GOOGLE_CLIENT_ID!,
@@ -21,14 +23,19 @@ export const authOptions: AuthOptions = {
         // Writes them into leetcode.sqlite so they exist for all future queries.
         async signIn({ user, account }) {
             if (account?.provider === "google" && user.id) {
+                // 1. Sync with SQLite
                 await upsertGoogleUser({
                     id:    user.id,
                     email: user.email!,
                     name:  user.name  ?? null,
                     image: user.image ?? null,
-                })
+                });
+
+                await createSession(user.id);
+                
+                return true;
             }
-            return true
+            return false;
         },
 
         // Bake userId into the JWT cookie stored in the browser.
