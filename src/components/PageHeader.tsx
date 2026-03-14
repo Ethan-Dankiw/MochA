@@ -5,6 +5,13 @@ import {ThemeMenu} from "@/components/ThemeMenu";
 import StyledLink from "@/components/StyledLink";
 import {SessionPayload} from "@/lib/types/session";
 import {getSessionPayload} from "@/lib/session/session";
+import { signOut } from "next-auth/react";
+import { destroySession } from "@/lib/session/session";
+
+const transition = "transition-all duration-300";
+const underline = "underline underline-offset-12 hover:underline-offset-4";
+const decoration = "decoration-2 decoration-transparent hover:decoration-[inherit]";
+const baseStyles = `${transition} ${underline} ${decoration}`;
 
 type Props = {
     children?: React.ReactNode;
@@ -13,6 +20,15 @@ type Props = {
 
 export default function PageHeader(props: Readonly<Props>): React.ReactNode {
     const [session, setSession] = React.useState<SessionPayload | null>(null);
+
+    const handleSignOut = async () => {
+        // 1. Clear your custom cookie first
+        await destroySession();
+        
+        // 2. Then trigger the NextAuth logout
+        // callbackUrl: "/" sends them back to the landing page after clearing
+        await signOut({ callbackUrl: "/" });
+    };
 
     React.useEffect(() => {
         // Get the session
@@ -38,18 +54,29 @@ export default function PageHeader(props: Readonly<Props>): React.ReactNode {
                 {!session?.authenticated ? (
                     <ul className="flex flex-row gap-2 items-center">
                         <li>
-                            <StyledLink href="/api/auth/signin" className="p-2">Login</StyledLink>
+                            <StyledLink href="/auth/login" className="p-2">Login</StyledLink>
                         </li>
                         <li className="text-muted-foreground/40 text-xs font-mono lowercase">or</li>
                         <li>
-                            <StyledLink href="/api/auth/signin" className="p-2 font-medium">Sign-Up</StyledLink>
+                            <StyledLink href="/auth/signup" className="p-2 font-medium">Sign-Up</StyledLink>
                         </li>
                     </ul>
                 ) : (
-                    
-                    <StyledLink href={`/profile/${session.user_id}`} className="p-2">
-                        Profile
-                    </StyledLink>
+                    <ul className="flex flex-row gap-2 items-center">
+                        <StyledLink href={`/profile/${session.user_id}`} className="p-2">
+                            Profile
+                        </StyledLink>
+                        <li className="text-muted-foreground/40 text-xs font-mono lowercase">or</li>
+                        <li>
+                            <button 
+                                onClick={handleSignOut} 
+                                className={`${baseStyles} p-2 font-medium cursor-pointer bg-transparent border-none`}
+                            >
+                                Sign-Out
+                            </button>
+                        </li>
+                    </ul>
+                 
                 )}
                 <ThemeMenu />
             </nav>

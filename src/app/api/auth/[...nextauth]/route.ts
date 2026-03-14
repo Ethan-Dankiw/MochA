@@ -5,7 +5,7 @@
 import NextAuth, { AuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { upsertGoogleUser } from "@/lib/database/userquery"
-import { createSession } from "@/lib/session/session";
+import { createSession, destroySession } from "@/lib/session/session";
 
 export const authOptions: AuthOptions = {
     secret: process.env.SESSION_SECRET,
@@ -31,7 +31,13 @@ export const authOptions: AuthOptions = {
                     image: user.image ?? null,
                 });
 
-                await createSession(user.id);
+                try {
+                    await createSession(user.id);
+                    console.log("Mocha Session created successfully");
+                } catch (e: any) {
+                    console.error("CRITICAL: createSession failed!", e.message);
+                    // We don't 'throw' here so the sign-up can still finish
+                }
                 
                 return true;
             }
@@ -54,9 +60,17 @@ export const authOptions: AuthOptions = {
         },
 
         async redirect({ baseUrl }) {
-            return `${baseUrl}/interview`
+            return `${baseUrl}`
         },
     },
+
+    events: {
+        async signOut() {
+            // This runs on the server side when the user triggers a sign-out
+            await destroySession();
+            console.log("Mocha session destroyed successfully.");
+        },
+    }
 }
 
 const handler = NextAuth(authOptions)
