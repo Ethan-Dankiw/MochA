@@ -2,127 +2,91 @@ import { groq } from "@ai-sdk/groq";
 import { convertToModelMessages, streamText } from "ai";
 import FileUtils from "@/lib/utils/FileUtils";
 import { getProblemsByDifficulty } from "@/lib/database/query";
+import { promises as fs } from "node:fs"; 
+import path from "node:path"; 
 
 export const maxDuration = 20;
 
-// Define the base prompt that is sent to initialise the AI with instructions on how to act
-let cached_prompt: string | null = null;
+// Corrected cache variables
+let cached_base_prompt: string | null = null;
 let cached_behavioral_questions: string[] | null = null;
+let cached_timeout_prompt: string | null = null; 
 
 const pickRandom = <T>(items: T[]): T | null => (items.length ? items[Math.floor(Math.random() * items.length)] : null);
 
-//get  the behavioural
 const getBehavioralQuestions = async (): Promise<string[]> => {
-	if (cached_behavioral_questions) return cached_behavioral_questions;
-
-	const path = FileUtils.buildRelativePath("src", "lib", "data", "behavioral_questions.json");
-	const raw = await FileUtils.readFile(path);
-
-	if (!raw) return (cached_behavioral_questions = []);
-
-	try {
-		const parsed = JSON.parse(raw);
-		cached_behavioral_questions = Array.isArray(parsed) ? parsed.filter((q): q is string => typeof q === "string" && q.trim().length > 0) : [];
-	} catch {
-		cached_behavioral_questions = [];
-	}
-
-	return cached_behavioral_questions;
+    if (cached_behavioral_questions) return cached_behavioral_questions;
+    const pathUrl = FileUtils.buildRelativePath("src", "lib", "data", "behavioral_questions.json");
+    const raw = await FileUtils.readFile(pathUrl);
+    if (!raw) return (cached_behavioral_questions = []);
+    try {
+        const parsed = JSON.parse(raw);
+        cached_behavioral_questions = Array.isArray(parsed) ? parsed : [];
+    } catch {
+        cached_behavioral_questions = [];
+    }
+    return cached_behavioral_questions;
 };
 
-const getRandomLeetCodeQuestion = async (difficulty: "Easy" | "Medium" | "Hard" = "Medium") => {
-	try {
-		const rows = await getProblemsByDifficulty(difficulty, 1); // SQL already random
-		return rows[0] ?? null;
-	} catch {
-		return null;
-	}
+const getRandomLeetCodeQuestion = async (difficulty: string = "Medium") => {
+    try {
+        const rows = await getProblemsByDifficulty(difficulty as any, 1);
+        return rows[0] ?? null;
+    } catch {
+        return null;
+    }
 };
 
-/**
- * Get the contents of the AI's prompt from disk
- */
 const getBasePrompt = async (): Promise<string | null> => {
-	// If the prompt has already been cached
-	if (cached_prompt) {
-		return cached_prompt;
-	}
-
-	// Build the file path to the prompt file
-	const prompt_file_path = FileUtils.buildRelativePath("src", "lib", "data", "prompt.txt");
-
-	// Get the file from disk
-	cached_prompt = await FileUtils.readFile(prompt_file_path);
-
-	// If no file contents exists
-	if (!cached_prompt) {
-		console.error("Failed to read prompt.txt");
-		return null;
-	}
-
-	// Return the prompt
-	return cached_prompt;
-};
-
-export async function POST(req: Request) {
-	const { messages, currentCode, difficulty } = await req.json();
-
-	const base_prompt = await getBasePrompt();
-	if (!base_prompt) {
-		return new Response("Internal Server Error: No base prompt found", { status: 500 });
-	}
-
-	const behavioral = pickRandom(await getBehavioralQuestions());
-	const leetcode = await getRandomLeetCodeQuestion(difficulty === "Easy" || difficulty === "Hard" ? difficulty : "Medium");
-
-	const behavioralSection = behavioral ? `\n\n=== BEHAVIORAL QUESTION ===\n${behavioral}\n` : "";
-
-	const leetcodeSection = leetcode
-		? `\n\n=== LEETCODE QUESTION ===
-Title: ${leetcode.title}
-Difficulty: ${leetcode.difficulty}
-URL: ${leetcode.url}
-Description:
-${leetcode.description ?? "No description available."}
-`
-		: "";
-
-	const codeSection = currentCode ? `\n\n=== LIVE EDITOR STATE ===\n${currentCode}\n` : "";
-
-	const prompt = `${base_prompt}${behavioralSection}${leetcodeSection}${codeSection}`;
-
-	const result = streamText({
-		model: groq("llama-3.3-70b-versatile"),
-		system: prompt,
-		messages: await convertToModelMessages(messages),
-	});
-
-	return result.toUIMessageStreamResponse();
+    if (cached_base_prompt) return cached_base_prompt;
+    try {
+        const file_path = path.join(process.cwd(), 'src', 'lib', 'data', 'prompt.txt');
+        cached_base_prompt = await fs.readFile(file_path, 'utf8');
+        return cached_base_prompt;
+    } catch (e) { return null; }
 }
 
-// export async function POST(req: Request) {
-//     // Fetch the message and current code from the request
-//     const {messages, currentCode} = await req.json();
+const getTimeoutPrompt = async (): Promise<string | null> => {
+    if (cached_timeout_prompt) return cached_timeout_prompt;
+    try {
+        const file_path = path.join(process.cwd(), 'src', 'lib', 'data', 'timeout.txt');
+        cached_timeout_prompt = await fs.readFile(file_path, 'utf8');
+        return cached_timeout_prompt;
+    } catch (e) { return null; }
+}
 
-//     // Get the base prompt for the AI
-//     const base_prompt = await getBasePrompt();
+export async function POST(req: Request) {
+    const { messages, currentCode, isTimeout, difficulty = "Medium" } = await req.json();
 
-//     // If the base prompt does not exist
-//     if (!base_prompt) {
-//         console.warn("No base prompt for the AI")
-//         return new Response("Internal Server Error: No base prompt found", { status: 500 });
-//     }
+    let systemInstruction: string;
 
-//     // Dynamically append the contents of the user's code editor in the prompt
-//     const prompt = currentCode
-//         ? `${base_prompt}\n\n=== LIVE EDITOR STATE ===\nThe candidate is currently writing the following code in their editor. Use this to understand their context and answer their queries:\n${base_prompt}\n`
-//         : base_prompt
+    if (isTimeout) {
+        console.log("Timeout Mode Activated.");
+        const timeoutPrompt = await getTimeoutPrompt();
+        systemInstruction = timeoutPrompt ?? "Interview over. Summarize performance.";
+    } else {
+        const base_prompt = await getBasePrompt();
+        if (!base_prompt) return new Response("Prompt not found", { status: 500 });
 
-//     const result = streamText({
-//         model: groq('llama-3.3-70b-versatile'),
-//         system: prompt,
-//         messages: await convertToModelMessages(messages),
-//     });
+        // Only pick new questions if this is the START of the interview
+        // Otherwise, the questions will change every time the user sends a message!
+        const isNewStart = !messages || messages.length === 0;
+        
+        const behavioral = isNewStart ? pickRandom(await getBehavioralQuestions()) : null;
+        const leetcode = isNewStart ? await getRandomLeetCodeQuestion(difficulty) : null;
 
-//     return result.toUIMessageStreamResponse();
-// }
+        const behavioralSection = behavioral ? `\n\n=== BEHAVIORAL ===\n${behavioral}` : "";
+        const leetcodeSection = leetcode ? `\n\n=== LEETCODE ===\n${leetcode.title}\n${leetcode.description}` : "";
+        const codeSection = currentCode ? `\n\n=== LIVE CODE ===\n${currentCode}` : "";
+
+        systemInstruction = `${base_prompt}${behavioralSection}${leetcodeSection}${codeSection}`;
+    }
+
+    const result = streamText({
+        model: groq('llama-3.3-70b-versatile'),
+        system: systemInstruction,
+        messages: await convertToModelMessages(messages),
+    });
+
+    return result.toUIMessageStreamResponse();
+}

@@ -9,6 +9,13 @@ export interface ILLMContext {
     messages: Array<UIMessage>,
     sendMessage: (message: string) => Promise<void>,
     status: ChatStatus,
+
+    // Timer Context
+    secondsLeft: number,
+    isTimerActive: boolean,
+    startTimer: () => void,
+    pauseTimer: () => void,
+    resetInterview: () => void
 }
 
 
