@@ -6,8 +6,6 @@ import {SidebarInset} from "@/components/ui/sidebar";
 import ChatSidebar from "@/components/chatbot/ChatSidebar";
 import Timer from "@/components/Timer";
 
-import { LLMProvider } from "@/components/contexts/llm/LLMProvider";
-
 
 type Props = {
     children?: React.ReactNode;
@@ -19,18 +17,16 @@ export default function InterviewPage(props: Readonly<Props>): React.ReactNode {
     // LLM Hooks
 
     return (
-        <LLMProvider onResponse={(text) => console.log("AI says:", text)}>
-            <div className={"flex flex-1 min-h-0 overflow-hidden"}>
-                <SidebarInset className={"flex flex-col flex-1 min-h-0"}>
-                    <div className={"flex-1"}>
-                        <CodeEditor initialCode={'console.log("Hello from Monaco!");'} />
-                    </div>
-                </SidebarInset>
+        <div className={"flex flex-1 min-h-0 overflow-hidden"}>
+            <SidebarInset className={"flex flex-col flex-1 min-h-0"}>
+                <div className={"flex-1"}>
+                    <CodeEditor initialCode={'console.log("Hello from Monaco!");'} />
+                </div>
+            </SidebarInset>
 
-                <Timer/>
+            <Timer/>
 
-                <ChatSidebar />
-            </div>
-        </LLMProvider>
+            <ChatSidebar />
+        </div>
     );
 }
