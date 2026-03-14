@@ -64,7 +64,7 @@ export default function TextToSpeechProvider(props: Readonly<Props>): React.Reac
             console.error("TTS Playback Failed: ", e);
             setIsSpeaking(false);
         }
-    }, []);
+    }, [currentAudioRef.current, setIsSpeaking]);
 
     const value = React.useMemo<ITextToSpeechContext>(() => ({
         playTTS,
