@@ -1,11 +1,33 @@
 'use client';
 
 import {useChat} from '@ai-sdk/react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useWhisper} from '@/hooks/useWhisper';
+import {UIMessage} from "ai";
+
+const CHAT_PAGE_STORAGE_KEY = "chat_messages_chat_page";
+
+const readMessagesFromStorage = (): UIMessage[] => {
+    if (typeof window === "undefined") {
+        return [];
+    }
+
+    try {
+        const raw = window.localStorage.getItem(CHAT_PAGE_STORAGE_KEY);
+        if (!raw) {
+            return [];
+        }
+
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+};
 
 export default function Chat() {
     const [input, setInput] = useState('');
+    const initialMessages = useState<UIMessage[]>(() => readMessagesFromStorage())[0];
 
     const {recording, error, toggleRecording} = useWhisper((text) => {
         setInput(prev => prev ? `${prev} ${text}` : text);
@@ -30,6 +52,8 @@ export default function Chat() {
     };
 
     const {messages, sendMessage, status} = useChat({
+        id: CHAT_PAGE_STORAGE_KEY,
+        initialMessages,
         // Destructure 'message' from the context object
         onFinish: ({message}) => {
             // Extract the text from the parts array
@@ -45,10 +69,16 @@ export default function Chat() {
         },
     });
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem(CHAT_PAGE_STORAGE_KEY, JSON.stringify(messages));
+        }
+    }, [messages]);
+
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (input.trim()) {
-            sendMessage({text: input});
+            sendMessage({text: input}, {body: {mode: "mixed"}});
             setInput('');
         }
     };
