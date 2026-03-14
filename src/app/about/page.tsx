@@ -38,7 +38,7 @@ export default function AboutPage() {
 
           <div className="flex gap-4 justify-center">
             <Link
-              href="/interview"
+              href="/chooseinterview"
               className="rounded-lg px-6 py-3 border font-medium"
               style={{
                 borderColor: "var(--text-color)",

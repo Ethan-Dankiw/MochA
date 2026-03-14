@@ -23,7 +23,7 @@ export default function HomePage() {
           </Link>
 
           <Link
-            href="/interview"
+            href="/chooseinterview"
             className="rounded-lg border border-black px-6 py-3 hover:bg-gray-100"
             style={{
               borderColor: "var(--text-color)",
