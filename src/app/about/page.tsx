@@ -37,7 +37,7 @@ export default function AboutPage() {
 
                     <div className="flex gap-4 justify-center">
                         <Link
-                            href="/chooseinterview"
+                            href="/interview/choose"
                             className="rounded-lg border font-medium border-button-primary-foreground px-6 py-3 hover:bg-button-primary"
                         >
                             Start Interview
