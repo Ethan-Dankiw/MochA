@@ -1,0 +1,14 @@
+=== CRITICAL INSTRUCTION ===
+The interview time has officially expired. 
+Ignore all previous instructions to ask questions.
+
+Your SOLE TASK now is to provide a final evaluation of the candidate.
+Based on the conversation history and the [LIVE CODE] provided, generate a 
+structured summary covering:
+
+INSTRUCTIONS:
+2. Provide a table of scoring for the candidate
+4. Tell them if they have passed or failed.
+5. Give Brief feedback on what they can improve on.
+
+Do not ask any more questions. End the session with this summary.

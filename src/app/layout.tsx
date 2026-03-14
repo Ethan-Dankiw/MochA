@@ -5,7 +5,9 @@ import {cn} from "@/lib/utils";
 import React from "react";
 import {ThemeProvider} from "next-themes";
 import PageHeader from "@/components/PageHeader";
-import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
+import {SidebarProvider} from "@/components/ui/sidebar";
+import AppProvider from "@/components/contexts/app/AppProvider";
+import {Toaster} from "@/components/ui/sonner";
 
 const jetbrainsMono = JetBrains_Mono({subsets: ['latin'], variable: '--font-mono'});
 
@@ -30,17 +32,21 @@ type Props = {
 
 export default function RootLayout(props: Readonly<Props>) {
     return (
-        <html lang="en" className={cn("font-mono", jetbrainsMono.variable)} suppressHydrationWarning={true}>
+        <html lang="en" className={`${cn("font-mono", jetbrainsMono.variable)}`} suppressHydrationWarning={true}>
         <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col overflow-hidden`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen flex flex-col overflow-hidden text-foreground`}
         >
-        <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true} disableTransitionOnChange={true}>
-            <SidebarProvider className={"flex-col flex-1 min-h-0 overflow-hidden"}>
-                <PageHeader />
-                <main className={"flex-1 flex flex-col min-h-0 overflow-hidden"}>
-                    {props.children}
-                </main>
-            </SidebarProvider>
+        <ThemeProvider attribute={"class"} defaultTheme={"system"} enableSystem={true}
+                       disableTransitionOnChange={false}>
+            <AppProvider>
+                <SidebarProvider className={"flex-col flex-1 min-h-0 overflow-hidden"}>
+                    <PageHeader/>
+                    <main className={"flex-1 flex flex-col min-h-0 overflow-hidden"}>
+                        {props.children}
+                    </main>
+                    <Toaster/>
+                </SidebarProvider>
+            </AppProvider>
         </ThemeProvider>
         </body>
         </html>
