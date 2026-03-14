@@ -4,6 +4,7 @@ import React from "react";
 import {ThemeMenu} from "@/components/ThemeMenu";
 import StyledLink from "@/components/StyledLink";
 import {useSession} from "@/components/contexts/session/SessionContext";
+import {Coffee} from "lucide-react";
 
 const transition = "transition-all duration-300";
 const underline = "underline underline-offset-12 hover:underline-offset-4";
@@ -20,7 +21,8 @@ export default function PageHeader(props: Readonly<Props>): React.ReactNode {
 
     return (
         <header className={"h-16 w-full flex flex-row items-center justify-between px-32 py-4 border-b bg-background"}>
-            <div className="flex flex-row items-center gap-4">
+            <div className="h-full flex flex-row items-center gap-2">
+                <Coffee />
                 <h1>MochA</h1>
             </div>
             <nav className={"flex flex-row items-center gap-8"}>
