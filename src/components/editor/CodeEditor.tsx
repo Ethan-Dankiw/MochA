@@ -25,6 +25,18 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
         setCode(props.initialCode ?? "");
     }, [props.initialCode])
 
+    React.useEffect(() => {
+        const container = editorRef.current?.getDomNode?.();
+        if (!container) return;
+
+        const stopDrag = () => {
+            container.focus();
+        };
+
+        container.addEventListener("pointerleave", stopDrag);
+        return () => container.removeEventListener("pointerleave", stopDrag);
+    }, []);
+
     const mountThemes = (editor: typeof monaco) => {
         // Define the light mode theme
         editor.editor.defineTheme("creme-light", {
