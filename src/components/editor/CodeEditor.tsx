@@ -5,16 +5,20 @@ import * as monaco from "monaco-editor";
 import {Editor} from "@monaco-editor/react";
 import {useCode} from "@/components/contexts/code/CodeContext";
 import {useTheme} from "next-themes";
-import LanguageSelector from "@/components/LanguageSelector";
 
 type Props = {
     initialCode?: string;
 };
 
+const LIGHT_BACKGROUND = "#fff2e2"
+const LIGHT_BACKGROUND_THEME = `bg-[#fff2e2]`
+const DARK_BACKGROUND = "#110f0c"
+const DARK_BACKGROUND_THEME = `bg-[#110f0c]`
+
 export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
     const {code, setCode, language} = useCode();
-    const { resolvedTheme } = useTheme();
+    const {resolvedTheme} = useTheme();
 
     // On load set the default code
     React.useEffect(() => {
@@ -27,10 +31,10 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
             base: "vs",
             inherit: false,
             rules: [
-                { token: "", foreground: "#573e23" },
+                {token: "", foreground: "#573e23"},
             ],
             colors: {
-                "editor.background": "#fff2e2",
+                "editor.background": LIGHT_BACKGROUND,
                 "editor.foreground": "#8B7355",
                 "editorLineNumber.foreground": "#8B7355",
                 "editorCursor.foreground": "#6B4F3B",
@@ -56,10 +60,10 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
             base: "vs",
             inherit: false,
             rules: [
-                { token: "", foreground: "#b29d87" },
+                {token: "", foreground: "#b29d87"},
             ],
             colors: {
-                "editor.background": "#110f0c",
+                "editor.background": DARK_BACKGROUND,
                 "editor.foreground": "#7a5d48",
                 "editorLineNumber.foreground": "#77522a",
                 "editorCursor.foreground": "#794a19",
@@ -87,7 +91,7 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
     }
 
     return (
-        <div className={"h-full relative"}>
+        <div className={`h-full relative ${resolvedTheme === "dark" ? DARK_BACKGROUND_THEME : LIGHT_BACKGROUND_THEME}`}>
             <Editor
                 height="100%"
                 language={language}
@@ -97,7 +101,7 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
                 onMount={mountEditor}
                 theme={resolvedTheme === 'dark' ? "espresso-dark" : "creme-light"}
                 options={{
-                    minimap: { enabled: false },
+                    minimap: {enabled: false},
                     smoothScrolling: true,
                 }}
             />
