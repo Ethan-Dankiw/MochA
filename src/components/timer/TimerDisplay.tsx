@@ -5,6 +5,8 @@ import TimerToggle from "@/components/timer/TimerToggle";
 import TimerDuration from "@/components/timer/TimerDuration";
 import {toast} from "sonner";
 import {useLLM} from "@/components/contexts/llm/LLMContext";
+import {refresh} from "next/cache";
+import {useRouter} from "next/navigation";
 
 type Props = {
     duration: number;
@@ -25,6 +27,10 @@ export default function TimerDisplay(props: Readonly<Props>): React.ReactNode {
 
     // Store the interval
     const interval = React.useRef<NodeJS.Timeout | null>(null);
+
+    globalThis.onbeforeunload = () => {
+        clearMessages();
+    }
 
     const startTimer = () => {
         // If the timer is locked
@@ -68,7 +74,7 @@ export default function TimerDisplay(props: Readonly<Props>): React.ReactNode {
         cancelTimer()
 
         // Send a start message
-        send("I would like to finish the the technical interview now! Please grade what I done!").then(() => {
+        send("I would like to finish the the interview now! Please grade what I done!").then(() => {
             // Clear stored messages for when the user refreshes their page
             clearMessages()
         })
@@ -79,7 +85,7 @@ export default function TimerDisplay(props: Readonly<Props>): React.ReactNode {
         cancelTimer()
 
         // Send a start message
-        send("I would like to finish the the technical interview now! Please grade what I done even though I have not quite yet finished!").then(() => {
+        send("I would like to finish the the interview now! Please grade what I done even though I have not quite yet finished!").then(() => {
             // Clear stored messages for when the user refreshes their page
             clearMessages()
         })
@@ -105,9 +111,17 @@ export default function TimerDisplay(props: Readonly<Props>): React.ReactNode {
         interval.current = null;
     }
 
+    const reloadPage = () => {
+        // Clear chat messages
+        clearMessages();
+
+        // Reload the page
+        globalThis.location.reload();
+    }
+
     return (
         <div className={'bg-primary p-2 rounded-lg flex flex-row items-center gap-2 w-full'}>
-            <TimerToggle className={"rounded-md w-fit h-fit p-2 cursor-pointer"} isRunning={running} locked={lock} onStart={startTimer} onStop={stopTimer} />
+            <TimerToggle className={"rounded-md w-fit h-fit p-2 cursor-pointer"} isRunning={running} isLocked={lock} onReload={reloadPage} onStart={startTimer} onStop={stopTimer} />
             <TimerDuration remainingSeconds={duration} />
         </div>
     )

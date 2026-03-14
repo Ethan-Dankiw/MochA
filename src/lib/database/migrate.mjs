@@ -1,3 +1,5 @@
+'use server'
+
 /**
  * migrate.mjs — adds user tables to leetcode.sqlite.
  * Plain Node.js — no ts-node, no path alias issues.

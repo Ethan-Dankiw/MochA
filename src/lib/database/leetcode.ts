@@ -1,3 +1,5 @@
+'use server'
+
 import {loadDB} from "@/lib/database/init";
 import FileUtils from "@/lib/utils/FileUtils";
 

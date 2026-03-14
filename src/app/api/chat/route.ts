@@ -3,7 +3,8 @@ import { convertToModelMessages, streamText } from "ai";
 import FileUtils from "@/lib/utils/FileUtils";
 import { getProblemsByDifficulty } from "@/lib/database/query";
 import { promises as fs } from "node:fs"; 
-import path from "node:path"; 
+import path from "node:path";
+import {cached} from "sqlite3";
 
 export const maxDuration = 20;
 
@@ -91,13 +92,33 @@ const getBasePrompt = async (): Promise<string | null> => {
 	return cached_prompt;
 };
 
+let cachedPrompt: string | null = null;
+
+const MODEL = "llama-3.1-8b-instant";
+
 export async function POST(req: Request) {
-	const { messages, currentCode, difficulty, mode } = await req.json();
+	const {messages, currentCode, difficulty, mode, language} = await req.json();
+
 	const isBehaviouralMode = mode === "behavioural";
+
+	const codeSection = !isBehaviouralMode && currentCode ? `\n\n=== LIVE EDITOR STATE for ${language}===\n${currentCode}\n` : "";
+
+	if (cachedPrompt) {
+		const prompt = `${cachedPrompt}${codeSection}`;
+		console.log(prompt)
+		const result = streamText({
+			model: groq(MODEL),
+			system: prompt,
+			maxOutputTokens: 1000,
+			messages: await convertToModelMessages(messages),
+		});
+
+		return result.toUIMessageStreamResponse();
+	}
 
 	const base_prompt = isBehaviouralMode ? await getBehaviouralPrompt() : await getBasePrompt();
 	if (!base_prompt) {
-		return new Response("Internal Server Error: No prompt found", { status: 500 });
+		return new Response("Internal Server Error: No prompt found", {status: 500});
 	}
 
 	const behavioral = isBehaviouralMode ? null : pickRandom(await getBehavioralQuestions());
@@ -113,16 +134,16 @@ Difficulty: ${leetcode.difficulty}
 URL: ${leetcode.url}
 Description:
 ${leetcode.description ?? "No description available."}
-`
-		: "";
+` : "";
 
-	const codeSection = !isBehaviouralMode && currentCode ? `\n\n=== LIVE EDITOR STATE ===\n${currentCode}\n` : "";
+	cachedPrompt = `${base_prompt}${behavioralSection}${leetcodeSection}`;
 
-	const prompt = `${base_prompt}${behavioralSection}${leetcodeSection}${codeSection}`;
-
+	const prompt = `${cachedPrompt}${codeSection}`;
+	console.log(prompt)
 	const result = streamText({
-		model: groq("llama-3.3-70b-versatile"),
+		model: groq(MODEL),
 		system: prompt,
+		maxOutputTokens: 1000,
 		messages: await convertToModelMessages(messages),
 	});
 

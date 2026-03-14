@@ -54,7 +54,7 @@ export default function AboutPage() {
                                 <PopoverContent className={'rounded-md w-48'}>
                                     <StyledLink href="/interview/code" className={"text-md text-center"}>Technical
                                         Interview</StyledLink>
-                                    {/*<StyledLink href="/interview/behaviour" className={"text-md text-center"}>Behavioural Interview</StyledLink>*/}
+                                    <StyledLink href="/interview/behaviour" className={"text-md text-center"}>Behavioural Interview</StyledLink>
                                 </PopoverContent>
                             </Popover>
                         )}

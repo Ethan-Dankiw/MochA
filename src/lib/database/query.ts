@@ -1,3 +1,5 @@
+'use server'
+
 import {LeetcodeQuestion, LeetcodeSchema} from "@/lib/types/leetcode";
 import {loadDB} from "@/lib/database/init";
 

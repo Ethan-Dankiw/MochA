@@ -71,8 +71,7 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
     const clear = React.useCallback(() => {
         // Clear storage 
         globalThis.localStorage.removeItem(storageKey);
-        
-    }, [storageKey]);
+    }, []);
 
     // Handle Cleaning Local Storage (Navigation/Unmount ONLY)
     React.useEffect(() => {
@@ -85,7 +84,7 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
 
     // Automatically sync messages to localStorage whenever they update
     React.useEffect(() => {
-        if (typeof window === "undefined") return;
+        if (globalThis.window === undefined) return;
         globalThis.localStorage.setItem(storageKey, JSON.stringify(messages));
     }, [messages, storageKey]);
 
