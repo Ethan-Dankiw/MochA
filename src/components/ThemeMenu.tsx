@@ -26,16 +26,16 @@ export function ThemeMenu() {
                 <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
                 <span className="sr-only">Toggle theme</span>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
+            <DropdownMenuContent align="end" className={"rounded-md bg-background"}>
+                <DropdownMenuItem onClick={() => setTheme("light")} className={"focus:bg-secondary"}>
                     <Sun/>
                     <p>Light</p>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                <DropdownMenuItem onClick={() => setTheme("dark")} className={"focus:bg-secondary"}>
                     <Moon/>
                     <p>Dark</p>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
+                <DropdownMenuItem onClick={() => setTheme("system")} className={"focus:bg-secondary"}>
                     <Computer/>
                     <p>System</p>
                 </DropdownMenuItem>

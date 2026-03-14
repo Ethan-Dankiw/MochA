@@ -20,24 +20,6 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
         setCode(props.initialCode ?? "");
     }, [props.initialCode])
 
-    // const myCremeTheme = React.useMemo<monaco.editor.IStandaloneThemeData>(() => ({
-    //     base: "vs",
-    //     inherit: false, // prevent vs-light from overriding
-    //     rules: [
-    //         {token: "", foreground: theme === 'dark' ? "#b29d87" : "#573e23"}, // default text color (light brown)
-    //         // you can add more token rules here if you want syntax highlighting
-    //     ],
-    //     colors: {
-    //         "editor.background": theme === 'dark' ? "#110f0c" : "#fff2e2",
-    //         "editor.foreground": theme === 'dark' ? "#7a5d48" : "#8B7355",
-    //         "editorLineNumber.foreground": theme === 'dark' ? "#77522a" : "#8B7355",
-    //         "editorCursor.foreground": theme === 'dark' ? "#794a19" : "#6B4F3B",
-    //         "editorIndentGuide.background": theme === 'dark' ? "#42280c" : "#E8E1D5",
-    //         "editor.lineHighlightBorder": theme === 'dark' ? "#1f1810" : "#E8E1D5",
-    //         "editor.lineHighlightBackground": theme === 'dark' ? "#1f1810" : "#E8E1D5",
-    //     },
-    // }), [theme]);
-
     const mountThemes = (editor: typeof monaco) => {
         // Define the light mode theme
         editor.editor.defineTheme("creme-light", {
@@ -54,6 +36,17 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
                 "editorIndentGuide.background": "#E8E1D5",
                 "editor.lineHighlightBorder": "#ffeed9",
                 "editor.lineHighlightBackground": "#ffeed9",
+                "editorLineNumber.activeForeground": "#573e23",
+                "editorBracketMatch.background": "#E8E1D5",
+                "editorBracketMatch.border": "#8B7355",
+                "editorBracketHighlight.foreground1": "#bd6b14",
+                "editorBracketHighlight.foreground2": "#8c4e0d",
+                "editorBracketHighlight.foreground3": "#643708",
+                "editorBracketHighlight.unexpectedBracket.foreground": "#ff4444",
+                "scrollbarSlider.background": "#f1d9c4",
+                "scrollbarSlider.hoverBackground": "#dcbfa6",
+                "scrollbarSlider.activeBackground": "#cfae8f",
+                "scrollbar.shadow": "#E8E1D5",
             }
         })
 
@@ -72,7 +65,18 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
                 "editorIndentGuide.background": "#42280c",
                 "editor.lineHighlightBorder": "#1f1810",
                 "editor.lineHighlightBackground": "#1f1810",
-            }
+                "editorLineNumber.activeForeground": "#d4c4b7",
+                "editorBracketMatch.background": "#1f1810",
+                "editorBracketMatch.border": "#7a5d48",
+                "editorBracketHighlight.foreground1": "#bd6b14",
+                "editorBracketHighlight.foreground2": "#8c4e0d",
+                "editorBracketHighlight.foreground3": "#643708",
+                "editorBracketHighlight.unexpectedBracket.foreground": "#ff4444",
+                "scrollbarSlider.background": "#1f1810",
+                "scrollbarSlider.hoverBackground": "#33271b",
+                "scrollbarSlider.activeBackground": "#4a3928",
+                "scrollbar.shadow": "#1f1810",
+            },
         })
     }
 
@@ -89,10 +93,14 @@ export default function CodeEditor(props: Readonly<Props>): React.ReactNode {
             height="100%"
             defaultLanguage="javascript"
             defaultValue={props.initialCode}
+            onChange={(value) => setCode(value || "")}
             beforeMount={mountThemes}
             onMount={mountEditor}
             theme={theme}
-            onChange={(value) => setCode(value || "")}
+            options={{
+                minimap: { enabled: false },
+                smoothScrolling: true,
+            }}
         />
     );
 }
