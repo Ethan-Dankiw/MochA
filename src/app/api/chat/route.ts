@@ -91,48 +91,40 @@ const getBasePrompt = async (): Promise<string | null> => {
 	return cached_prompt;
 };
 
-
-const getTimeoutPrompt = async (): Promise<string | null> => {
-    if (cached_timeout_prompt) return cached_timeout_prompt;
-    try {
-        const file_path = path.join(process.cwd(), 'src', 'lib', 'data', 'timeout.txt');
-        cached_timeout_prompt = await fs.readFile(file_path, 'utf8');
-        return cached_timeout_prompt;
-    } catch (e) { return null; }
-}
-
 export async function POST(req: Request) {
-    const { messages, currentCode, isTimeout, difficulty = "Medium" } = await req.json();
+	const { messages, currentCode, difficulty, mode } = await req.json();
+	const isBehaviouralMode = mode === "behavioural";
 
-    let systemInstruction: string;
+	const base_prompt = isBehaviouralMode ? await getBehaviouralPrompt() : await getBasePrompt();
+	if (!base_prompt) {
+		return new Response("Internal Server Error: No prompt found", { status: 500 });
+	}
 
-    if (isTimeout) {
-        console.log("Timeout Mode Activated.");
-        const timeoutPrompt = await getTimeoutPrompt();
-        systemInstruction = timeoutPrompt ?? "Interview over. Summarize performance.";
-    } else {
-        const base_prompt = await getBasePrompt();
-        if (!base_prompt) return new Response("Prompt not found", { status: 500 });
+	const behavioral = isBehaviouralMode ? null : pickRandom(await getBehavioralQuestions());
+	const leetcodeDifficulty = normalizeDifficulty(difficulty);
+	const leetcode = isBehaviouralMode ? null : await getRandomLeetCodeQuestion(leetcodeDifficulty);
 
-        // Only pick new questions if this is the START of the interview
-        // Otherwise, the questions will change every time the user sends a message!
-        const isNewStart = !messages || messages.length === 0;
-        
-        const behavioral = isNewStart ? pickRandom(await getBehavioralQuestions()) : null;
-        const leetcode = isNewStart ? await getRandomLeetCodeQuestion(difficulty) : null;
+	const behavioralSection = behavioral ? `\n\n=== BEHAVIORAL QUESTION ===\n${behavioral}\n` : "";
 
-        const behavioralSection = behavioral ? `\n\n=== BEHAVIORAL ===\n${behavioral}` : "";
-        const leetcodeSection = leetcode ? `\n\n=== LEETCODE ===\n${leetcode.title}\n${leetcode.description}` : "";
-        const codeSection = currentCode ? `\n\n=== LIVE CODE ===\n${currentCode}` : "";
+	const leetcodeSection = leetcode
+		? `\n\n=== LEETCODE QUESTION ===
+Title: ${leetcode.title}
+Difficulty: ${leetcode.difficulty}
+URL: ${leetcode.url}
+Description:
+${leetcode.description ?? "No description available."}
+`
+		: "";
 
-        systemInstruction = `${base_prompt}${behavioralSection}${leetcodeSection}${codeSection}`;
-    }
+	const codeSection = !isBehaviouralMode && currentCode ? `\n\n=== LIVE EDITOR STATE ===\n${currentCode}\n` : "";
 
-    const result = streamText({
-        model: groq('llama-3.3-70b-versatile'),
-        system: systemInstruction,
-        messages: await convertToModelMessages(messages),
-    });
+	const prompt = `${base_prompt}${behavioralSection}${leetcodeSection}${codeSection}`;
 
-    return result.toUIMessageStreamResponse();
+	const result = streamText({
+		model: groq("llama-3.3-70b-versatile"),
+		system: prompt,
+		messages: await convertToModelMessages(messages),
+	});
+
+	return result.toUIMessageStreamResponse();
 }

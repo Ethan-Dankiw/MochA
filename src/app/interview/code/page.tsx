@@ -1,10 +1,12 @@
 "use client"
 
 import React from "react";
-import CodeEditor from "@/components/CodeEditor";
+import CodeEditor from "@/components/editor/CodeEditor";
 import {SidebarInset} from "@/components/ui/sidebar";
 import ChatSidebar from "@/components/chatbot/ChatSidebar";
-import Timer from "@/components/Timer";
+import TimerDisplay from "@/components/timer/TimerDisplay";
+import DifficultySelect from "@/components/DifficultySelect";
+import LanguageSelector from "@/components/LanguageSelector";
 
 
 type Props = {
@@ -14,8 +16,6 @@ type Props = {
 
 
 export default function InterviewPage(props: Readonly<Props>): React.ReactNode {
-    // LLM Hooks
-
     return (
         <div className={"flex flex-1 min-h-0 overflow-hidden"}>
 
@@ -25,9 +25,17 @@ export default function InterviewPage(props: Readonly<Props>): React.ReactNode {
                 </div>
             </SidebarInset>
 
-            <div className="flex flex-col border-l border-neutral-800">
-                <div className="p-4 border-b border-neutral-800 sticky top-0 bg-neutral-950 z-10 bg-primary">
-                    <Timer />
+            <div className="flex flex-col border-l border-l-border">
+                <div className="flex flex-row gap-2 p-2 border-b border-b-border bg-sidebar-background">
+                    <div className={'w-1/3 h-full'}>
+                        <LanguageSelector />
+                    </div>
+                    <div className={'w-1/3 h-full'}>
+                        <DifficultySelect />
+                    </div>
+                    <div className={'w-1/3 h-full'}>
+                        <TimerDisplay duration={20} />
+                    </div>
                 </div>
 
                 <div className="flex-1 min-h-0">

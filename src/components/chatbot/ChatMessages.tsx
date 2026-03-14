@@ -26,8 +26,8 @@ export default function ChatMessages(props: Readonly<Props>): React.ReactNode {
             
             {/* 3. Map over the filtered list directly */}
             {visibleMessages.map(message => (
-                <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'} text-black`}>
+                <div key={message.id} className={`flex mb-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === 'user' ? 'bg-foreground text-primary' : 'bg-primary text-foreground'}`}>
                         <div className={"text-sm mb-2 font-bold"}>
                             <p>{message.role === 'user' ? 'You' : 'Advocate Agent'}</p>
                         </div>

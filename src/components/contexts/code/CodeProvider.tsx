@@ -2,6 +2,7 @@
 
 import React from "react"
 import {CodeContext, ICodeContext} from "@/components/contexts/code/CodeContext";
+import {SupportedLanguages} from "@/lib/types/languages";
 
 // The type used to provide interface values to the context provider component
 type Props = {
@@ -13,13 +14,18 @@ export function CodeProvider(props: Readonly<Props>): React.ReactNode {
     // Store the code being displayed in the code editor so it can be sent along with chat messages
     const [code, setCode] = React.useState<string>("")
 
+    // Store the language that is being used by the code editor for styling
+    const [language, setLanguage] = React.useState<SupportedLanguages>(SupportedLanguages.JAVASCRIPT)
+
     // Memoize the context value to its no re-computed on renders unnecessarily
     const value = React.useMemo<ICodeContext>(() => {
         return {
             code: code,
             setCode: setCode,
+            language: language,
+            setLanguage: setLanguage,
         }
-    }, [code, setCode]);
+    }, [code, setCode, language, setLanguage]);
 
     // Return the provider component
     return (

@@ -1,18 +1,33 @@
 "use client"
 
 import Link from "next/link"
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Button} from "@/components/ui/button";
 import React from "react";
-import {SessionPayload} from "@/lib/types/session";
+import StyledLink from "@/components/StyledLink";
 import {getSessionPayload} from "@/lib/session/session";
 
 export default function HomePage() {
-    const [session, setSession] = React.useState<SessionPayload | null>(null);
+    const [loading, setLoading] = React.useState(true);
+    const [authenticated, setAuthenticated] = React.useState(false);
 
     React.useEffect(() => {
-        // Get the session
-        getSessionPayload().then(session => setSession(session));
-    }, [])
+        // Start loading
+        setLoading(true);
 
+        // Get the session payload
+        getSessionPayload().then(payload => {
+            // If the payload does not exist
+            if (!payload) {
+                return;
+            }
+
+            // Set the authentication status based on the session
+            setAuthenticated(payload.authenticated);
+        }).finally(() => {
+            setLoading(false);
+        })
+    }, [])
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center bg-primary px-6">
@@ -27,19 +42,26 @@ export default function HomePage() {
                 </p>
 
                 <div className="flex gap-4 justify-center">
-                    {!session?.authenticated ? (
+                    {authenticated ? (
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button variant={"default"}
+                                        className={"h-[inherit]! cursor-pointer rounded-lg border-2 border-button-primary-foreground px-6 py-3 hover:bg-button-primary"}>
+                                    <span className={"text-lg"}>Start Interview</span>
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className={'rounded-md w-48'}>
+                                <StyledLink href="/interview/code" className={"text-md text-center"}>Technical
+                                    Interview</StyledLink>
+                                {/*<StyledLink href="/interview/behaviour" className={"text-md text-center"}>Behavioural Interview</StyledLink>*/}
+                            </PopoverContent>
+                        </Popover>
+                    ) : (
                         <Link
                             href="/auth/login"
-                            className="px-6 py-3 rounded-md! bg-button-primary! text-button-primary-foreground! hover:bg-button-primary-hover! hover:text-button-primary-foreground-hover!"
+                            className="flex items-center px-6 py-3 rounded-md! bg-button-primary! text-button-primary-foreground! hover:bg-button-primary-hover! hover:text-button-primary-foreground-hover!"
                         >
-                            Login
-                        </Link>
-                    ):(
-                        <Link
-                            href="/interview/choose"
-                            className="rounded-lg border-2 border-button-primary-foreground px-6 py-3 hover:bg-button-primary"
-                        >
-                            Start Interview
+                            <span>Login</span>
                         </Link>
                     )}
                 </div>

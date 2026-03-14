@@ -15,7 +15,7 @@ export default function ChatMessageInput(props: Readonly<Props>): React.ReactNod
     const [message, setMessage] = React.useState<string | null>(null);
 
     // Get the status and send function from the LLM context
-    const {status: messageStatus, sendMessage} = useLLM();
+    const {status: messageStatus, send} = useLLM();
 
     // Get the recording information from the Voice to Text context
     const {recordingState, toggleRecording} = useVoiceToText();
@@ -31,7 +31,7 @@ export default function ChatMessageInput(props: Readonly<Props>): React.ReactNod
         }
 
         // Send the message
-        await sendMessage(trimmed);
+        await send(trimmed);
 
         // Reset the message
         setMessage(null);

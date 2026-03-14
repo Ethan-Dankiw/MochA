@@ -9,6 +9,7 @@ import React from "react";
 import {register} from "node:module";
 import {registerUser} from "@/actions/register";
 import {toast} from "sonner";
+import {redirect} from "next/navigation";
 
 
 export function SignupForm({...props}: React.ComponentProps<typeof Card>) {
@@ -27,6 +28,8 @@ export function SignupForm({...props}: React.ComponentProps<typeof Card>) {
         const result = await registerUser(email, name, password)
 
         console.log(result)
+
+        redirect("/")
     }
 
     return (

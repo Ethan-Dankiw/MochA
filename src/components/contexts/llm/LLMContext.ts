@@ -2,23 +2,16 @@
 
 import React from "react"
 import {ChatStatus, UIMessage} from "ai";
-
-export const resetInterview = () => {
-    window.location.reload();
-};
+import {QuestionDifficulty} from "@/lib/types/difficulty";
 
 // The context value used when using the context
 export interface ILLMContext {
     messages: Array<UIMessage>,
-    sendMessage: (message: string) => Promise<void>,
+    send: (message: string) => Promise<void>,
+    clearMessages: () => void,
     status: ChatStatus,
-
-    // Timer Context
-    secondsLeft: number,
-    isTimerActive: boolean,
-    startTimer: () => void,
-    pauseTimer: () => void,
-    resetInterview: () => void
+    difficulty: QuestionDifficulty,
+    setDifficulty: (difficulty: QuestionDifficulty) => void,
 }
 
 
