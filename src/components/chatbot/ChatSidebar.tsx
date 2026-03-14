@@ -6,9 +6,9 @@ import ChatMessageInput from "@/components/chatbot/ChatMessageInput";
 import ChatMessages from "@/components/chatbot/ChatMessages";
 
 type Props = {
-    children?: React.ReactNode;
-    className?: string;
-}
+  className?: string;
+  side?: "left" | "right";
+};
 
 export default function ChatSidebar(props: Readonly<Props>): React.ReactNode {
     return (
