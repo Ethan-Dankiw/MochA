@@ -1,161 +1,105 @@
-"use client";
+"use client"
 
-import React from "react";
+import React from "react"
 import { ILLMContext, LLMContext } from "@/components/contexts/llm/LLMContext";
 import { useChat } from "@ai-sdk/react";
 import { useCode } from "@/components/contexts/code/CodeContext";
-import { usePathname, useSearchParams } from "next/navigation";
-import { UIMessage } from "ai";
+import { useTextToSpeech } from "@/components/contexts/tts/TextToSpeechContext"; // 1. Import TTS hook
+import { useRouter } from "next/navigation";
 
 type Props = {
-  children: React.ReactNode;
-  onResponse: (response: string) => void;
-};
-
-const DEFAULT_TIME = 1200;
-const TIMEOUT_SIGNAL = "__INTERRUPT_SYSTEM_TIME_UP__";
-
-const readMessagesFromStorage = (storageKey: string): UIMessage[] => {
-  if (typeof window === "undefined") return [];
-
-  try {
-    const raw = window.localStorage.getItem(storageKey);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-};
+    children: React.ReactNode;
+    onResponse: (response: string) => void;
+}
 
 export function LLMProvider(props: Readonly<Props>): React.ReactNode {
-  const { code } = useCode();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+    const { code, setCode } = useCode();
+    const { playTTS } = useTextToSpeech();
+    const router = useRouter();
+    const DEFAULT_TIME = 1200; 
+    
+    const [secondsLeft, setSecondsLeft] = React.useState(DEFAULT_TIME); 
+    const [isTimerActive, setIsTimerActive] = React.useState(false);
 
-  const isBehaviourPage = pathname === "/behaviour";
-  const selectedDifficulty = searchParams.get("difficulty") ?? "medium";
-  const storageKey = isBehaviourPage
-    ? "chat_messages_behavioural_page"
-    : "chat_messages_interview_page";
+    // Sync signal string to avoid "sticky" history
+    const TIMEOUT_SIGNAL = "__INTERRUPT_SYSTEM_TIME_UP__";
 
-  const initialMessages = React.useMemo(
-    () => readMessagesFromStorage(storageKey),
-    [storageKey]
-  );
 
-  const [secondsLeft, setSecondsLeft] = React.useState(DEFAULT_TIME);
-  const [isTimerActive, setIsTimerActive] = React.useState(false);
+    const { messages, status, sendMessage, setMessages } = useChat({
+        onFinish: ({ message: response }) => {
+            const text = response.parts
+                .filter(part => part.type === "text")
+                .map(part => (part as any).text)
+                .join(" ")
+                .trim();
 
-  const { messages, sendMessage, status, setMessages } = useChat({
-    id: storageKey,
-    initialMessages,
-    onFinish: ({ message: response }) => {
-      const text = response.parts
-        .filter((part) => part.type === "text")
-        .map((part) => part.text)
-        .join(" ")
-        .trim();
+            if (!text) return;
 
-      if (!text) return;
-      props.onResponse(text);
-    },
-  });
-
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem(storageKey, JSON.stringify(messages));
-  }, [messages, storageKey]);
-
-  React.useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-
-    if (isTimerActive && secondsLeft > 0) {
-      interval = setInterval(() => {
-        setSecondsLeft((prev) => prev - 1);
-      }, 1000);
-    } else if (isTimerActive && secondsLeft === 0) {
-      setIsTimerActive(false);
-
-      void sendMessage(
-        { text: TIMEOUT_SIGNAL },
-        {
-          body: {
-            mode: isBehaviourPage ? "behavioural" : "mixed",
-            difficulty: selectedDifficulty,
-            currentCode: isBehaviourPage ? null : code,
-            isTimeout: true,
-          },
+            playTTS(text);
+            props.onResponse(text);
         }
-      );
-    }
+    });
 
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [
-    isTimerActive,
-    secondsLeft,
-    sendMessage,
-    isBehaviourPage,
-    selectedDifficulty,
-    code,
-  ]);
+    React.useEffect(() => {
+        let interval: NodeJS.Timeout | null = null;
 
-  const send = React.useCallback(
-    async (message: string) => {
-      await sendMessage(
-        { text: message },
-        {
-          body: {
-            mode: isBehaviourPage ? "behavioural" : "mixed",
-            difficulty: selectedDifficulty,
-            currentCode: isBehaviourPage ? null : code,
-          },
+        if (isTimerActive && secondsLeft > 0) {
+            interval = setInterval(() => {
+                setSecondsLeft((prev) => prev - 1);
+            }, 1000);
+        } else if (secondsLeft === 0 && isTimerActive) {
+            setIsTimerActive(false);
+            console.log("Time up! Triggering summary mode...");
+            
+            // Use a string here or your TIMEOUT_SIGNAL constant
+            sendMessage(
+                { text: "__INTERRUPT_SYSTEM_TIME_UP__" }, 
+                { body: { currentCode: code, isTimeout: true } }
+            );
         }
-      );
-    },
-    [sendMessage, isBehaviourPage, selectedDifficulty, code]
-  );
 
-  const startTimer = React.useCallback(() => {
-    setMessages([]);
-    setSecondsLeft(DEFAULT_TIME);
-    setIsTimerActive(true);
-  }, [setMessages]);
+        return () => { if (interval) clearInterval(interval); };
+    }, [isTimerActive, secondsLeft, sendMessage, code]);
 
-  const pauseTimer = React.useCallback(() => {
-    setIsTimerActive(false);
-  }, []);
+    const startTimer = React.useCallback(() => {
+        // Reset the clock if it's currently at 0
+        if (secondsLeft <= 0) {
+            setSecondsLeft(DEFAULT_TIME);
+        }
 
-  const resetInterview = React.useCallback(() => {
-    setMessages([]);
-    setSecondsLeft(DEFAULT_TIME);
-    setIsTimerActive(false);
-  }, [setMessages]);
+        // Wipe the message history
+        // This ensures the backend doesn't see the previous summary 
+        // or the 'isTimeout' flag from the last session.
+        setMessages([]);
 
-  const value = React.useMemo<ILLMContext>(
-    () => ({
-      messages,
-      sendMessage: send,
-      status,
-      secondsLeft,
-      isTimerActive,
-      startTimer,
-      pauseTimer,
-      resetInterview,
-    }),
-    [
-      messages,
-      send,
-      status,
-      secondsLeft,
-      isTimerActive,
-      startTimer,
-      pauseTimer,
-      resetInterview,
-    ]
-  );
+        // Re-activate the interval
+        setIsTimerActive(true);
+        
+        console.log("Session Reset: Timer restored and history cleared.");
+    }, [secondsLeft, setMessages, DEFAULT_TIME]);
 
-  return <LLMContext.Provider value={value}>{props.children}</LLMContext.Provider>;
+    const value = React.useMemo<ILLMContext>(() => ({
+        messages,
+        sendMessage: async (msg: string) => {
+            await sendMessage({ text: msg }, { body: { currentCode: code } });
+        },
+        status,
+        secondsLeft,
+        isTimerActive,
+        startTimer,
+        pauseTimer: () => setIsTimerActive(false),
+        resetInterview: () => {
+            setMessages([]);
+            setSecondsLeft(DEFAULT_TIME);
+            setIsTimerActive(false);
+            setCode("");
+            router.push("/chooseinterview");
+        }
+    }), [messages, sendMessage, status, secondsLeft, isTimerActive, startTimer, code, setMessages, setCode, router]);
+
+    return (
+        <LLMContext.Provider value={value}>
+            {props.children}
+        </LLMContext.Provider>
+    )
 }
