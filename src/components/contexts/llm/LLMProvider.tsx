@@ -4,8 +4,6 @@ import React from "react"
 import { ILLMContext, LLMContext } from "@/components/contexts/llm/LLMContext";
 import { useChat } from "@ai-sdk/react";
 import { useCode } from "@/components/contexts/code/CodeContext";
-import { useTextToSpeech } from "@/components/contexts/tts/TextToSpeechContext"; // 1. Import TTS hook
-import { useRouter } from "next/navigation";
 
 type Props = {
     children: React.ReactNode;
@@ -13,9 +11,7 @@ type Props = {
 }
 
 export function LLMProvider(props: Readonly<Props>): React.ReactNode {
-    const { code, setCode } = useCode();
-    const { playTTS } = useTextToSpeech();
-    const router = useRouter();
+    const { code } = useCode();
     const DEFAULT_TIME = 1200; 
     
     const [secondsLeft, setSecondsLeft] = React.useState(DEFAULT_TIME); 
@@ -35,7 +31,6 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
 
             if (!text) return;
 
-            playTTS(text);
             props.onResponse(text);
         }
     });
