@@ -12,7 +12,7 @@ type Props = {
 
 export function LLMProvider(props: Readonly<Props>): React.ReactNode {
     const { code } = useCode();
-    const DEFAULT_TIME = 20; 
+    const DEFAULT_TIME = 1200; 
     
     const [secondsLeft, setSecondsLeft] = React.useState(DEFAULT_TIME); 
     const [isTimerActive, setIsTimerActive] = React.useState(false);
@@ -55,17 +55,17 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
     }, [isTimerActive, secondsLeft, sendMessage, code]);
 
     const startTimer = React.useCallback(() => {
-        // 1. Reset the clock if it's currently at 0
+        // Reset the clock if it's currently at 0
         if (secondsLeft <= 0) {
             setSecondsLeft(DEFAULT_TIME);
         }
 
-        // 2. Wipe the message history
+        // Wipe the message history
         // This ensures the backend doesn't see the previous summary 
         // or the 'isTimeout' flag from the last session.
         setMessages([]);
 
-        // 3. Re-activate the interval
+        // Re-activate the interval
         setIsTimerActive(true);
         
         console.log("Session Reset: Timer restored and history cleared.");
