@@ -15,14 +15,14 @@ export default function HomePage() {
 
                 <div className="flex gap-4 justify-center">
                     <Link
-                        href="/login"
+                        href="/auth/login"
                         className="px-6 py-3 rounded-md! bg-button-primary! text-button-primary-foreground! hover:bg-button-primary-hover! hover:text-button-primary-foreground-hover!"
                     >
                         Login
                     </Link>
 
                     <Link
-                        href="/interview"
+                        href="/interview/choose"
                         className="rounded-lg border-2 border-button-primary-foreground px-6 py-3 hover:bg-button-primary"
                     >
                         Start Interview

@@ -4,7 +4,6 @@ import React from "react"
 import { ILLMContext, LLMContext } from "@/components/contexts/llm/LLMContext";
 import { useChat } from "@ai-sdk/react";
 import { useCode } from "@/components/contexts/code/CodeContext";
-import { useTextToSpeech } from "@/components/contexts/tts/TextToSpeechContext"; // 1. Import TTS hook
 
 type Props = {
     children: React.ReactNode;
@@ -13,7 +12,6 @@ type Props = {
 
 export function LLMProvider(props: Readonly<Props>): React.ReactNode {
     const { code } = useCode();
-    const { playTTS } = useTextToSpeech();
     const DEFAULT_TIME = 1200; 
     
     const [secondsLeft, setSecondsLeft] = React.useState(DEFAULT_TIME); 
@@ -33,7 +31,6 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
 
             if (!text) return;
 
-            playTTS(text);
             props.onResponse(text);
         }
     });
@@ -90,8 +87,10 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
             setMessages([]);
             setSecondsLeft(DEFAULT_TIME);
             setIsTimerActive(false);
+            setCode("");
+            router.push("/chooseinterview");
         }
-    }), [messages, sendMessage, status, secondsLeft, isTimerActive, startTimer, code, setMessages]);
+    }), [messages, sendMessage, status, secondsLeft, isTimerActive, startTimer, code, setMessages, setCode, router]);
 
     return (
         <LLMContext.Provider value={value}>

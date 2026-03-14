@@ -1,6 +1,10 @@
+"use client"
+
 import React from "react";
-import Link from "next/link";
 import {ThemeMenu} from "@/components/ThemeMenu";
+import StyledLink from "@/components/StyledLink";
+import {SessionPayload} from "@/lib/types/session";
+import {getSessionPayload} from "@/lib/session/session";
 
 type Props = {
     children?: React.ReactNode;
@@ -8,30 +12,38 @@ type Props = {
 }
 
 export default function PageHeader(props: Readonly<Props>): React.ReactNode {
+    const [session, setSession] = React.useState<SessionPayload | null>(null);
+
+    React.useEffect(() => {
+        // Get the session
+        getSessionPayload().then(session => setSession(session));
+    }, [])
+
     return (
         <header className={"h-16 w-full flex flex-row items-center justify-between px-32 py-4 border-b bg-background"}>
             <div className="flex flex-row items-center gap-4">
                 <h1>MochA</h1>
-                <ThemeMenu />
+                <h1>{JSON.stringify(session)}</h1>
             </div>
             <nav className={"flex flex-row items-center gap-8"}>
                 <ul className={"flex flex-row gap-4"}>
                     <li>
-                        <Link href="/" className="hover:underline">Home</Link>
+                        <StyledLink href={"/"} className={'p-2'}>Home</StyledLink>
                     </li>
                     <li>
-                        <Link href="/about" className="hover:underline">About</Link>
+                        <StyledLink href={"/about"} className={'p-2'}>About</StyledLink>
                     </li>
                 </ul>
                 <ul className={"flex flex-row gap-2"}>
                     <li>
-                        <Link href="/login" className="hover:underline">Login</Link>
+                        <StyledLink href={"/auth/login"} className={'p-2'}>Login</StyledLink>
                     </li>
                     <p>or</p>
                     <li>
-                        <Link href="/signup" className="hover:underline">Sign-Up</Link>
+                        <StyledLink href={"/auth/signup"} className={'p-2'}>Sign-Up</StyledLink>
                     </li>
                 </ul>
+                <ThemeMenu />
             </nav>
         </header>
     );
