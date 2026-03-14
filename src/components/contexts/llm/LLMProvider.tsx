@@ -4,6 +4,7 @@ import React from "react"
 import { ILLMContext, LLMContext } from "@/components/contexts/llm/LLMContext";
 import { useChat } from "@ai-sdk/react";
 import { useCode } from "@/components/contexts/code/CodeContext";
+import { useTextToSpeech } from "@/components/contexts/tts/TextToSpeechContext"; // 1. Import TTS hook
 
 type Props = {
     children: React.ReactNode;
@@ -12,6 +13,7 @@ type Props = {
 
 export function LLMProvider(props: Readonly<Props>): React.ReactNode {
     const { code } = useCode();
+    const { playTTS } = useTextToSpeech();
     const DEFAULT_TIME = 1200; 
     
     const [secondsLeft, setSecondsLeft] = React.useState(DEFAULT_TIME); 
@@ -19,6 +21,7 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
 
     // Sync signal string to avoid "sticky" history
     const TIMEOUT_SIGNAL = "__INTERRUPT_SYSTEM_TIME_UP__";
+
 
     const { messages, status, sendMessage, setMessages } = useChat({
         onFinish: ({ message: response }) => {
@@ -29,6 +32,8 @@ export function LLMProvider(props: Readonly<Props>): React.ReactNode {
                 .trim();
 
             if (!text) return;
+
+            playTTS(text);
             props.onResponse(text);
         }
     });
