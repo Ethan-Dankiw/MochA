@@ -10,15 +10,15 @@ type Props = {
   side?: "left" | "right";
 };
 
-export default function ChatSidebar({ className = "", side = "right" }: Props) {
-  return (
-    <Sidebar side={side} collapsible="none" className={`border-l bg-background h-full ${className}`}>
-      <SidebarContent className="flex-1 min-h-0 overflow-y-auto p-4 custom-scrollbar">
-        <ChatMessages />
-      </SidebarContent>
-      <SidebarFooter className="shrink-0 p-4 border-t border-border">
-        <ChatMessageInput />
-      </SidebarFooter>
-    </Sidebar>
-  );
+export default function ChatSidebar(props: Readonly<Props>): React.ReactNode {
+    return (
+        <Sidebar side={"right"} collapsible={"none"} className={"border-l bg-sidebar-background h-full"}>
+            <SidebarContent className={"flex-1 min-h-0 overflow-y-auto p-4 custom-scrollbar"}>
+                <ChatMessages />
+            </SidebarContent>
+            <SidebarFooter className={"shrink-0 p-4 border-t border-border"}>
+                <ChatMessageInput />
+            </SidebarFooter>
+        </Sidebar>
+    )
 }

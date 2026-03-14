@@ -5,138 +5,211 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+    /* Standard Shadcn Colors */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    /* =========================================
+       CUSTOM BUTTON COLORS
+       Usage:
+       - bg-button-primary hover:bg-button-primary-hover
+       - text-button-primary-foreground hover:text-button-primary-foreground-hover
+       ========================================= */
+    --color-button-primary: var(--button-primary);
+    --color-button-primary-hover: var(--button-primary-hover);
+    --color-button-primary-foreground: var(--button-primary-foreground);
+    --color-button-primary-foreground-hover: var(--button-primary-foreground-hover);
+
+    /* Sidebar & Charts */
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-background: var(--sidebar-background);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    /* Radii & Fonts */
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-mono);
 }
 
 :root {
-  /* PAGE */
-  --background: oklch(0.95 0.03 80); /* creme */
-  --foreground: oklch(0.35 0.04 50); /* dark brown text */
+    /* PAGE */
+    --background: oklch(0.905 0.04 71.006); /* creme */
+    --foreground: oklch(0.35 0.04 50); /* dark brown text */
 
-  --header-background: oklch(0.4289 0.0517 48.88); /* darker creme */
-  --header-foreground: oklch(0.98 0.02 85); /* dark brown text for contrast */
-  
-  --sidebar-background: oklch(57.562% 0.04687 60.813); /* lighter brown/creme */
-  --sidebar-foreground: oklch(0.35 0.04 50); /* dark brown text for contrast */
-  
-  /* CARDS */
-  --card: oklch(0.98 0.02 85);
-  --card-foreground: oklch(0.35 0.04 50);
+    /* CARDS & POPOVERS */
+    --card: oklch(0.98 0.02 85);
+    --card-foreground: oklch(0.35 0.04 50);
+    --popover: oklch(0.98 0.02 85);
+    --popover-foreground: oklch(0.35 0.04 50);
 
-  /* POPOVER */
-  --popover: oklch(0.98 0.02 85);
-  --popover-foreground: oklch(0.35 0.04 50);
+    /* SHADCN PRIMARY (Fallback for standard components) */
+    --primary: oklch(0.837 0.06 59.394);
+    --primary-foreground: oklch(0.25 0.026 47.676);
 
-  /* PRIMARY (buttons) */
-  --primary: oklch(0.45 0.07 45); /* warm brown */
-  --primary-foreground: oklch(0.98 0.02 85);
+    /* =========================================
+       CUSTOM BUTTON VARIABLES
+       ========================================= */
+    --button-primary: oklch(0.79 0.086 53.885);
+    --button-primary-hover: oklch(0.707 0.087 54.525);
+    --button-primary-foreground: oklch(0.407 0.076 53.185);
+    --button-primary-foreground-hover: oklch(0.3 0.058 53.802);
 
-  /* SECONDARY */
-  --secondary: oklch(0.92 0.03 75);
-  --secondary-foreground: oklch(0.35 0.04 50);
+    /* SECONDARY / MUTED / ACCENT */
+    --secondary: oklch(0.449 0.054 47.482);
+    --secondary-foreground: oklch(0.98 0.02 85);
+    --muted: oklch(0.92 0.03 75);
+    --muted-foreground: oklch(0.55 0.03 60);
+    --accent: oklch(0.9 0.04 75);
+    --accent-foreground: oklch(0.35 0.04 50);
 
-  /* MUTED */
-  --muted: oklch(0.92 0.03 75);
-  --muted-foreground: oklch(0.55 0.03 60);
+    /* UI */
+    --destructive: oklch(0.6 0.2 25);
+    --border: oklch(0.88 0.03 75);
+    --input: oklch(0.88 0.03 75);
+    --ring: oklch(0.55 0.05 45);
+    --radius: 0.625rem;
+    --text-color: oklch(50.007% 0.03397 39.177);
 
-  /* ACCENT */
-  --accent: oklch(0.9 0.04 75);
-  --accent-foreground: oklch(0.35 0.04 50);
+    /* SIDEBAR */
+    --sidebar-background: oklch(0.95 0.036 70.023);
+    --sidebar-foreground: oklch(0.35 0.04 50);
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
 
-  /* DESTRUCTIVE */
-  --destructive: oklch(0.6 0.2 25);
+    /* CHARTS */
+    --chart-1: oklch(0.809 0.105 251.813);
+    --chart-2: oklch(0.623 0.214 259.815);
+    --chart-3: oklch(0.546 0.245 262.881);
+    --chart-4: oklch(0.488 0.243 264.376);
+    --chart-5: oklch(0.424 0.199 265.638);
+}
 
-  /* UI */
-  --border: oklch(0.88 0.03 75);
-  --input: oklch(0.88 0.03 75);
-  --ring: oklch(0.55 0.05 45);
+.dark {
+    /* PAGE */
+    --background: oklch(0.296 0.024 58.538);
+    --foreground: oklch(0.863 0.07 60.336);
 
-  --text-color: oklch(50.007% 0.03397 39.177);
+    /* CARDS & POPOVERS */
+    --card: oklch(0.22 0.03 80);
+    --card-foreground: oklch(0.95 0.03 80);
+    --popover: oklch(0.22 0.03 80);
+    --popover-foreground: oklch(0.95 0.03 80);
 
-  --radius: 0.625rem;
+    /* SHADCN PRIMARY */
+    --primary: oklch(0.331 0.029 57.802);
+    --primary-foreground: oklch(0.78 0.072 60.126);
+
+    /* =========================================
+       CUSTOM BUTTON VARIABLES
+       ========================================= */
+    --button-primary: oklch(0.425 0.037 60.22);
+    --button-primary-hover: oklch(0.495 0.044 58.761);
+    --button-primary-foreground: oklch(0.78 0.072 60.126);
+    --button-primary-foreground-hover: oklch(0.861 0.079 60.835);
+
+    /* SECONDARY / MUTED / ACCENT */
+    --secondary: oklch(0.334 0.035 75.165);
+    --secondary-foreground: oklch(0.95 0.03 80);
+    --muted: oklch(0.28 0.03 80);
+    --muted-foreground: oklch(0.65 0.03 80);
+    --accent: oklch(0.28 0.03 80);
+    --accent-foreground: oklch(0.95 0.03 80);
+
+    /* UI */
+    --destructive: oklch(0.55 0.2 25);
+    --border: oklch(0.35 0.03 80);
+    --input: oklch(0.35 0.03 80);
+    --ring: oklch(0.55 0.05 45);
+    --text-color: oklch(0.85 0.03 80);
+
+    /* SIDEBAR */
+    --sidebar-background: oklch(0.203 0.012 73.265);
+    --sidebar-foreground: oklch(0.95 0.03 80);
+    --sidebar: oklch(0.18 0.03 80);
+    --sidebar-primary: oklch(0.75 0.08 55);
+    --sidebar-primary-foreground: oklch(0.20 0.03 80);
+    --sidebar-accent: oklch(0.28 0.03 80);
+    --sidebar-accent-foreground: oklch(0.95 0.03 80);
+    --sidebar-border: oklch(0.35 0.03 80);
+    --sidebar-ring: oklch(0.55 0.05 45);
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-mono;
-  }
+    * {
+        @apply border-border outline-ring/50;
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.2s ease-in-out, fill 0.3s ease-in-out, stroke 0.3s ease-in-out;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+
+    html {
+        @apply font-mono;
+    }
 }
 
-/* src/app/globals.css */
-
 @layer utilities {
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    display: block !important; /* Force display */
-  }
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        display: block !important;
+    }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    /* Use the oklch variable directly or a standard tailwind color */
-    background-color: var(--muted-foreground);
-    border-radius: 9999px;
-  }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: var(--muted-foreground);
+        border-radius: 9999px;
+    }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: var(--foreground);
-  }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: var(--foreground);
+    }
 
-  /* Firefox support */
-  .custom-scrollbar {
-    scrollbar-width: thin;
-    /* Avoid hsl() here since your theme uses oklch */
-    scrollbar-color: var(--muted-foreground) transparent;
-  }
-
-  .header {
-  background-color: var(--navbar-background);
-  }
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: var(--muted-foreground) transparent;
+    }
 }
