@@ -14,11 +14,11 @@ export default function HomePage() {
         <main className="flex min-h-screen flex-col items-center justify-center bg-primary px-6">
             <div className="max-w-2xl text-center">
                 <h1 className="text-4xl font-bold mb-4">
-                    AI Mock Technical Interviewer
+                    AI Mock Interviewer
                 </h1>
 
                 <p className="text-lg text-gray-600 mb-8" style={{color: "var(--text-color)"}}>
-                    Practice technical interviews with an AI interviewer.
+                    Practice behavioural and technical interviews with an AI interviewer.
                     Get instant feedback and improve your problem solving skills.
                 </p>
 

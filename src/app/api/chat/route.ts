@@ -105,7 +105,6 @@ export async function POST(req: Request) {
 
 	if (cachedPrompt) {
 		const prompt = `${cachedPrompt}${codeSection}`;
-		console.log(prompt)
 		const result = streamText({
 			model: groq(MODEL),
 			system: prompt,
@@ -139,7 +138,6 @@ ${leetcode.description ?? "No description available."}
 	cachedPrompt = `${base_prompt}${behavioralSection}${leetcodeSection}`;
 
 	const prompt = `${cachedPrompt}${codeSection}`;
-	console.log(prompt)
 	const result = streamText({
 		model: groq(MODEL),
 		system: prompt,

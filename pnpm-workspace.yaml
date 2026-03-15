@@ -1,2 +1,8 @@
 allowBuilds:
   sqlite3: true
+
+onlyBuiltDependencies:
+  - msw
+  - sharp
+  - sqlite3
+  - unrs-resolver

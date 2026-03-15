@@ -21,14 +21,14 @@ export default function AboutPage() {
                         className="text-4xl font-bold mb-6"
                         style={{color: "var(--text-color)"}}
                     >
-                        About AI Mock Technical Interviewer
+                        About AI Mock Interviewer
                     </h1>
 
                     <p
                         className="text-lg mb-6"
                         style={{color: "var(--text-color)"}}
                     >
-                        This platform allows you to practice technical interviews with an AI-powered interviewer.
+                        This platform allows you to practice behavioural and technical interviews with an AI-powered interviewer.
                         Receive instant feedback on your answers, improve your problem-solving skills, and
                         prepare for real technical interviews in a low-pressure environment.
                     </p>

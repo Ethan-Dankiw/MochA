@@ -17,7 +17,6 @@ export async function getSessionPayload() {
 
     // If the session does not exist
     if (!session) {
-        console.log("Could not get session payload");
         // Create a new un-authenticated session
         await createSession();
 
